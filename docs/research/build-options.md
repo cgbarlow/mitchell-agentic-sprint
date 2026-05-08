@@ -14,6 +14,7 @@
 | External tooling | None | Optional (banned-question linter) | Required (WebSearch, scrape, clustering, slide rendering, evals) |
 | Acceptance bar | Friendly tester completes 6 steps end-to-end with usable markdown artifacts | Investor-conversation-ready artifacts; Mom Test enforced | Investor-grade slide artifacts; verified anti-sycophancy via eval; theme saturation detection on real data |
 | Distribution | Claude Code plugin | Claude Code plugin | Claude Code plugin OR standalone web/desktop |
+| **NotebookLM bolt-on (§4)** | Possible but thin value | **Strong fit (~+5 days)** | Replaces ~30% of tooling work; reduces Extensive scope |
 
 ## Option 1 — Minimum: profile-pack-themed sibling plugin
 
@@ -272,6 +273,98 @@ docs/
 
 This tier is justified *only* if Moderate ships and demonstrates demand for tooling-layer capabilities. Building Extensive without that demand signal is the bad path.
 
+## Option 4 — NotebookLM bolt-on (tier-bridging)
+
+This is not a fourth standalone option — it's an **integration layer** that attaches to either Moderate or Extensive. Per the [issue #1 comment from cgbarlow](https://github.com/cgbarlow/mitchell-agentic-sprint/issues/1#issuecomment-4410281069), evaluating Google NotebookLM for synthesis and artifact work.
+
+### What's available (May 2026)
+
+| Path | Status | Sources |
+|---|---|---|
+| Google Cloud **NotebookLM Enterprise API** | Official, released Sep 2025. Notebook CRUD, sources, audio overviews, queries. Workspace/Enterprise customers only. | [Google Cloud docs](https://docs.cloud.google.com/gemini/enterprise/notebooklm-enterprise/docs/api-notebooks) |
+| Unofficial **CLI** (`tmc/nlm`, `notebooklm-cli`) | Active. Cookie-based auth via dedicated browser profile. Cookies persist; auto-refresh on expiry. | [tmc/nlm](https://github.com/tmc/nlm), [jacob-bd/notebooklm-cli](https://github.com/jacob-bd/notebooklm-cli) |
+| **MCP servers** (multiple) | Multiple actively maintained projects targeting Claude Code, Claude Desktop, Cursor, VS Code. As of Jan 2026 the CLI + MCP merged into a single `nlm` package. | [PleasePrompto/notebooklm-mcp](https://github.com/PleasePrompto/notebooklm-mcp), [julianoczkowski/notebooklm-mcp-2026](https://github.com/julianoczkowski/notebooklm-mcp-2026), [jacob-bd/notebooklm-mcp-cli](https://github.com/jacob-bd/notebooklm-mcp-cli) |
+| Open-source clone (`open-notebook`) | Self-hosted alternative, more flexible, no Google dependency | [lfnovo/open-notebook](https://github.com/lfnovo/open-notebook) |
+
+### Where NotebookLM helps
+
+| MAS step | What NotebookLM does | Replaces |
+|---|---|---|
+| 3. Buyer interviews | Theme map + saturation analysis from interview transcripts; verbatim quote extraction | Bespoke theme clustering (Extensive tier) |
+| 4. Framework | Summarises an expert's books/courses/interview tape; produces "what to keep / what to adapt" splits | WebSearch + scrape + manual synthesis (Extensive tier) |
+| 5. Competitor | Clustering across competitor websites; positioning whitespace candidates | WebSearch + scrape (Extensive tier) |
+| 6. Synthesis | Audio overview (10-min podcast briefing for the founder pre-VC meeting); mind map of the validated thesis; briefing doc | Augments — does not replace — the three written artifacts |
+
+NotebookLM's source-grounding posture aligns with MAS's "verbatim quotes only" rule (concept §6). It does **not** replace Mini Council adversarial logic, the Mom Test linter, or PPTX rendering.
+
+### Architectural shape
+
+```
+┌─────────────────────────────────────────────┐
+│  Claude Code session                         │
+│  ┌──────────────────┐    ┌────────────────┐ │
+│  │  MAS plugin      │───▶│ NotebookLM MCP │ │
+│  │  (Moderate tier) │    │ server (local) │ │
+│  └──────────────────┘    └───────┬────────┘ │
+└──────────────────────────────────│──────────┘
+                                   │
+                                   ▼
+                  ┌────────────────────────────┐
+                  │  NotebookLM (Google)       │
+                  │  - notebook per sprint     │
+                  │  - sources: transcripts,   │
+                  │    expert docs, competitor │
+                  │    pages                   │
+                  │  - outputs: themes, audio, │
+                  │    mind map, briefing      │
+                  └────────────────────────────┘
+```
+
+MAS's step commands invoke NotebookLM tools through MCP at:
+- Step 3 close-out: push interview transcripts to a notebook, request theme map
+- Step 4 mid-step: push expert source documents (user-provided URLs/PDFs), request framework summary
+- Step 5 mid-step: push competitor URLs, request positioning whitespace
+- Step 6 close-out: request audio overview from the full notebook
+
+### Effort over Moderate baseline
+
+| Work | Days |
+|---|---|
+| MCP server selection + installation docs | 1 |
+| Optional dependency declaration in plugin.json | 0.5 |
+| Step command patches to invoke MCP tools | 2 |
+| Auth onboarding flow (one-time browser-cookie or OAuth setup) | 1 |
+| Manual testing on one full sprint with NotebookLM-augmented synthesis | 1.5 |
+| Docs (which MCP server, how to install, how to auth) | 1 |
+| **Total over Moderate** | **~7 days (≈ 1.5 weeks)** |
+
+If applied to Extensive instead, this *reduces* Extensive's scope by replacing ~3 weeks of bespoke tooling (theme clustering, web research pipeline, partial slide synthesis) with the MCP integration. Net: Extensive + NotebookLM ≈ 12 weeks (vs 16 weeks for full bespoke Extensive).
+
+### Risks
+
+- **Auth friction** — first-run cookie setup or OAuth handshake will trip up some testers. Mitigation: `/sprint-setup` walks through it interactively.
+- **Vendor lock-in** — NotebookLM is closed-source / Google-owned. Mitigation: keep the integration optional; MAS still works without it.
+- **ToS risk on unofficial path** — Google could block unofficial automation. Mitigation: support both the unofficial CLI and the Enterprise API; document switching.
+- **Adversarial fidelity** — NotebookLM is grounded but not adversarial-by-default; if MAS uses NotebookLM-generated content for the Mini Council inputs, the Council still needs to attack the synthesis. Mitigation: NotebookLM produces facts, Mini Council attacks the *interpretation*.
+- **Notebook limits** — NotebookLM Plus has higher source/notebook limits but still bounded; long-running multi-attempt sprints may hit them. Mitigation: archive old sources between attempts.
+- **Per-user account requirement** — each builder needs their own Google/Workspace account. Acceptable for v1 (immediate network) but a polish gap for general-public v2.
+
+### Kill criteria
+
+After 3 testers run a full sprint with NotebookLM augmentation:
+- ≥ 2 testers report the auth setup is a blocker
+- The NotebookLM-generated theme map / framework synthesis is rejected by Scott as low-quality compared to Claude-only synthesis
+- ToS strike from Google on the unofficial path with no enterprise fallback
+
+→ Make NotebookLM truly optional; don't depend on it for v1 happy path.
+
+### Recommended adoption pattern
+
+- Make MCP integration **optional**, not required, in `plugin.json`
+- v1: support `nlm` CLI + one MCP server (pick the most-maintained at integration time, likely the unified `nlm` + `notebooklm-mcp` package)
+- v2: add Enterprise API path for org-deployed users
+- Always maintain a Claude-only fallback path so MAS works without NotebookLM (slower, less fluent synthesis, but functional)
+
 ## How to choose
 
 The choice depends on:
@@ -280,5 +373,6 @@ The choice depends on:
 2. **Distribution (Q6)** — if standalone web/desktop is required, Extensive is the floor and you also need a frontend. If Claude Code plugin is acceptable, Moderate suffices.
 3. **Tester pool size and v1 user persona** — your immediate AI-builder network (5–20 people) tolerates Moderate's rough edges; general-public AI-builders need Extensive's polish.
 4. **Spike or paper-only (research question)** — if user wants the spike, do one Step 1 + one Council invocation in Moderate's shape, ~1 week, before committing to the full Moderate build.
+5. **NotebookLM bolt-on (§4)** — independent decision. If yes, adds ~1.5 weeks to Moderate or shrinks Extensive by ~3 weeks. Highest fit when v1 audience is comfortable with a Google account dependency.
 
 The [recommendation](RECOMMENDATION.md) makes a concrete pick subject to those open questions.

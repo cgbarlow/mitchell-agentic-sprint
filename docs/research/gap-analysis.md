@@ -135,6 +135,37 @@ Three Step 6 outputs:
 
 **Verdict on Q3:** Markdown-first artifacts close 80% of the value. Slide rendering is genuinely optional for v1 — it's polish, not core. Tooling is *not* on the critical path until users specifically demand it.
 
+### 7a. NotebookLM as a synthesis layer (Q3 augmented)
+
+Per Issue #1 comment, evaluating Google NotebookLM as an artifact / synthesis layer. Findings as of May 2026:
+
+| Access path | Status | Fit for MAS |
+|---|---|---|
+| Google Cloud **NotebookLM Enterprise API** (released Sep 2025) | Official, supports notebook CRUD, source management, audio overview generation, queries. Workspace/Enterprise customers only — not consumer. | Viable for organisations on Google Workspace Enterprise. Adds Google Cloud auth surface to MAS. |
+| Unofficial Python API + CLI (`tmc/nlm`, `notebooklm-cli`, `notebooklm-py`) | Active community projects; cookie-based auth via dedicated browser profile | Lowest-friction for individual builders. Per-user authentication; rate-limit and ToS risk. |
+| MCP servers (`PleasePrompto/notebooklm-mcp`, `julianoczkowski/notebooklm-mcp-2026`, `roomi-fields/notebooklm-mcp`) | Multiple actively maintained; designed for Claude Code, Claude Desktop, Cursor, VS Code. As of Jan 2026 the CLI + MCP merged into a single `nlm` package | **Strongest fit** — MAS as a Claude Code plugin can declare an optional MCP dependency. User installs the MCP server; MAS skills invoke NotebookLM tools through it. |
+
+**What NotebookLM can do that's directly relevant to MAS:**
+
+- **Step 3 (Buyer interviews)** — Drop interview transcripts into a notebook; ask for theme map, saturation analysis, costly-action signal extraction. NotebookLM's source-grounding posture aligns with the "verbatim quotes only" rule (concept §6).
+- **Step 4 (Framework)** — Drop the chosen expert's books/courses/interview transcripts in; ask for "summarise their framework, identify 3 to keep verbatim and 3 to adapt for our ICP".
+- **Step 5 (Competitor)** — Drop top-10 competitor websites/case studies in; ask for clustering and positioning whitespace map.
+- **Step 6 (Synthesis)** — Drop everything in; generate audio overview (10-min podcast briefing for the founder pre-VC meeting), mind map of the validated thesis, briefing doc that complements the three written artifacts. **Not a slide renderer** — NotebookLM does not output PPTX. It outputs prose, audio, and visual maps.
+
+**What NotebookLM cannot do for MAS:**
+
+- Replace the Mini Council adversarial logic (NotebookLM is grounded but not adversarial-by-default)
+- Replace the Mom Test linter (NotebookLM doesn't enforce interview methodology)
+- Render `.pptx` slides — slide rendering remains a separate question
+- Run inside a fully self-contained Claude Code plugin without external auth (cookie or OAuth)
+
+**Auth/coupling friction:**
+
+- Cookie-based auth (unofficial CLI/MCP): user logs into Google in a dedicated browser profile, cookies are extracted, login persists. Friction at first run, smooth thereafter. ToS risk if Google blocks unofficial automation.
+- Enterprise API: requires Google Workspace Enterprise + GCP project + service account. High friction for individual builders; appropriate for organisational deployments.
+
+**Verdict on Q3 augmented:** NotebookLM is a serious option for Steps 3–6 *synthesis*, particularly via MCP. It does **not** eliminate the slide-rendering question (NotebookLM doesn't produce PPTX) but it *does* replace much of the Extensive-tier theme clustering + web research tooling with a single integration. Treated as a tier-bridging option below.
+
 ## Cross-cutting: what we get for free
 
 These campaign-mode capabilities are reusable as-is, no work needed:
@@ -177,6 +208,9 @@ Classified by type of work:
 - WebSearch + scrape for expert and competitor discovery
 - Theme clustering for the saturation detector beyond simple count
 - Anti-sycophancy regression eval
+
+**Optional integration (tier-bridging, see §7a):**
+- NotebookLM via MCP — replaces much of the heavy tooling above for Steps 3–6 synthesis, at the cost of an external auth surface and Google dependency
 
 **Pure prompt engineering (no code):**
 - Step 1–6 command prompts

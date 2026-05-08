@@ -8,6 +8,8 @@
 
 Estimated total: 7–8 weeks for one engineer, with a hard go/no-go decision after week 1.
 
+**Add the NotebookLM MCP integration as an optional bolt-on** (recommended) — adds ~1.5 weeks to v1, replaces ~3 weeks of Extensive-tier bespoke synthesis tooling, and aligns with MAS's "verbatim quotes only" rule. Decision can be deferred to week 5 (Steps 3–4 implementation) without restructuring earlier work. See [build-options.md §4](build-options.md#option-4--notebooklm-bolt-on-tier-bridging).
+
 ## The choice
 
 **Recommended: Option 2 — Moderate.**
@@ -52,13 +54,32 @@ If the week-1 gate fails, fallback options: (a) prompt-iterate on the Seed VC vo
 | Q6 | Distribution | **Open — assumes Claude Code plugin for Moderate.** If standalone web/desktop is required, Extensive is the floor and recommendation changes. | open question |
 | Q7 | Ownership | **Open — assumes one engineer, presumed to be Chris.** Affects time budget but not architecture. | open question |
 
+## NotebookLM addendum
+
+Per the [issue #1 follow-up](https://github.com/cgbarlow/mitchell-agentic-sprint/issues/1#issuecomment-4410281069), Google NotebookLM is a serious option for synthesis work. As of May 2026, viable access paths exist via official Google Cloud Enterprise API, unofficial CLI (`tmc/nlm`), and several MCP servers actively maintained for Claude Code. See [build-options.md §4](build-options.md#option-4--notebooklm-bolt-on-tier-bridging) for the full evaluation.
+
+**Recommended adoption pattern:**
+
+- Make NotebookLM **optional**, declared as an MCP dependency in `plugin.json`. MAS works without it; works *better* with it.
+- Defer the integration decision to **week 5** (Steps 3–4 implementation) — the architecture supports adding it without restructuring earlier weeks.
+- Pick the unified `nlm` + `notebooklm-mcp` package as primary path (CLI + MCP merged Jan 2026). Maintain a Claude-only fallback for users who can't or won't auth to Google.
+- Use NotebookLM for: theme map + saturation analysis (Step 3), expert framework synthesis (Step 4), positioning whitespace (Step 5), audio overview as a v2 artifact (Step 6).
+- **Do not** use NotebookLM for: Mini Council adversarial logic, Mom Test enforcement, slide rendering — these remain MAS's job.
+
+**Cost:** ~1.5 weeks added to Moderate (or ~3 weeks saved vs full bespoke Extensive tooling).
+
+**Dependencies:** Google account per user; MCP server install at user's machine; initial cookie/OAuth handshake during `/sprint-setup`.
+
+**Risk to track:** if Google blocks unofficial automation, fall back to Enterprise API for org-deployed users and Claude-only synthesis for individual users. Don't make NotebookLM load-bearing.
+
 ## Next actions (concrete)
 
-1. **User answers the six open questions** (below) — blocks everything downstream. ETA: 1 conversation.
+1. **User answers the seven open questions** (below) — blocks everything downstream. ETA: 1 conversation.
 2. **Spin up plugin scaffolding** in this repo: `.claude-plugin/plugin.json`, `commands/`, `skills/`, `docs/templates/`, `.sprint/` ignored. ETA: half a day.
 3. **Draft `seed-vc-agent/SKILL.md`** as the canonical Council voice. Includes: 2026-AI-era investor checklist, moat taxonomy, traction expectations, voice/tone borrowed from Dragon. This file becomes the template for the other four. ETA: 2 days.
 4. **Build the Step 1 + Council walking skeleton** end-to-end. Tester-facing. ETA: 4 days, ending by end of week 1.
 5. **Recruit three friendly testers** from Chris's immediate network. Send them through Step 1 + Council. Run debrief interviews using Mom Test discipline. ETA: ongoing through week 2.
+6. **NotebookLM MCP spike** (week 5) — add `nlm`/`notebooklm-mcp` as optional dependency; wire Step 3 close-out to invoke notebook creation + theme-map query. ETA: 1–2 days. Skippable if user declines NotebookLM bolt-on (Q8).
 
 ## Residual open questions for the user
 
@@ -66,10 +87,11 @@ These are open in the [research plan](research-plan.md) and remain unanswered. E
 
 1. **Distribution channel (Q6)** — Claude Code plugin? Claude Desktop plugin? Cursor? Standalone? *Recommendation assumes Claude Code plugin.*
 2. **Spike or paper-only?** — Recommendation collapses this question by *making the spike the week-1 walking skeleton*. The week-1 deliverable is the spike; if it satisfies, we continue to full Moderate.
-3. **Time budget** — Is 7–8 weeks acceptable? Is there a hard date?
+3. **Time budget** — Is 7–8 weeks acceptable? Is there a hard date? *(Add ~1.5 weeks if NotebookLM bolt-on selected.)*
 4. **Coupling tolerance** — Hard `campaign-mode` dependency OK, or does MAS need to stand alone? *Recommendation assumes hard dependency.*
 5. **v1 user persona** — Immediate AI-builder network or general-public AI-builders? *Recommendation assumes immediate network for v1, raises bar for v2.*
 6. **Scott's involvement** — High-fidelity loop (Scott reviews artifacts as we go) or low-fidelity (Scott waits for v1)? *Recommendation assumes high-fidelity — Scott reviews after week 1 walking skeleton, before committing remaining 6 weeks.*
+7. **NotebookLM bolt-on?** — Recommended yes (optional MCP dependency, +1.5 weeks). Are testers willing to authenticate to Google? Is vendor lock-in acceptable for v1?
 
 ## What success looks like 90 days from now
 
@@ -100,5 +122,6 @@ These are open in the [research plan](research-plan.md) and remain unanswered. E
 **Low confidence:**
 - Anti-sycophancy holds under sustained pressure from real users without an eval set (Q5). Accepted risk for v1; revisit for v2.
 - Distribution as Claude Code plugin is the right channel for the v1 audience (Q6). Open question.
+- NotebookLM MCP servers remain stable across Google's UI updates. Mitigated by the maintainer track record (April 2026 UI refresh shipped fixes within 24–72 hours per [BrightCoding writeup](http://www.blog.brightcoding.dev/2026/01/15/connect-llms-to-notebooklm-via-mcp-ai-powered-research-automation-2026)) but residual risk remains.
 
 This recommendation is reversible until week-1 gate. After that, the architectural commitments (state schema, command structure) are difficult to back out.
