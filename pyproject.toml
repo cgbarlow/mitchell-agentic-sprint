@@ -1,0 +1,35 @@
+[project]
+name = "mitchell-agentic-sprint"
+version = "0.1.0.dev0"
+description = "AI-led 6-step sprint that walks an AI builder through validating one idea — vertical, buyers, framework, positioning — to a sales deck, outreach plan, and pre-seed investor deck."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "CC-BY-SA-4.0" }
+authors = [
+  { name = "Scott Mitchell" },
+  { name = "Chris Barlow" },
+]
+dependencies = [
+  "pyyaml>=6.0.3",
+]
+
+[project.optional-dependencies]
+notebooklm = [
+  # NotebookLM MCP integration is added in Phase 4 — pin verified package then
+]
+dev = [
+  "pytest>=9.0.3",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["helpers*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra -q"
