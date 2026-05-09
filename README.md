@@ -101,7 +101,7 @@ See [ADR-006](docs/adrs/ADR-006-NotebookLM-MCP-Integration.md) and [SPEC-006-A](
 
 | Command | Step | What it does |
 |---|---|---|
-| [`/sprint-setup`](commands/sprint-setup.md) | one-time | Verifies prerequisite plugins; optionally onboards NotebookLM MCP |
+| [`/sprint-setup`](commands/sprint-setup.md) | one-time | Verifies prerequisite plugins; offers to install the 🧢 Mitchell profile; optionally onboards NotebookLM MCP |
 | [`/sprint-start`](commands/sprint-start.md) | 1 | Step 1 (Discovery) — Gandalf-led founder profile |
 | [`/sprint-step-2`](commands/sprint-step-2.md) | 2 | Vertical Stack — narrow to vertical × sub-vertical × ICP × workflow × AI leverage |
 | [`/sprint-step-3`](commands/sprint-step-3.md) | 3 | Buyer Interviews — Mom Test–linted scripts; saturation detection |
@@ -125,6 +125,12 @@ Five new SKILL.md NPC agents (per [ADR-004](docs/adrs/ADR-004-Mini-Council-Skill
 | 📋 [Grumpy PM](skills/grumpy-pm-agent/SKILL.md) | operational reality — realistic timeline; "what gets dropped on Tuesday" |
 
 The Council fires meaningfully at the Step 1→2 and Step 4→5 transitions.
+
+## Mentor profile — 🧢 Mitchell
+
+The Sprint's framing mentor is campaign-mode's [Gandalf NPC](https://github.com/cgbarlow/campaign-mode/blob/main/skills/gandalf-agent/SKILL.md) — the voice that frames Discovery (Step 1), the Vertical Stack (Step 2), and the expert-framework search (Step 4). MAS ships a profile pack that re-skins Gandalf as **🧢 Mitchell** — Scott Mitchell as the founder-mentor persona, asking the questions he'd ask in a real conversation.
+
+`/sprint-setup` offers to install the profile by default. Decline if you want the default 🧙 Gandalf appearance, or remove `.campaign/profiles/gandalf.md` later. The profile pack itself ships at [`profile-packs/mitchell-agentic-sprint/gandalf.md`](profile-packs/mitchell-agentic-sprint/gandalf.md) and follows campaign-mode's [SPEC-CM-006-A profile format](https://github.com/cgbarlow/campaign-mode/blob/main/docs/3_specs/SPEC-CM-006-A-Character-Profile-Format.md).
 
 ## State
 
