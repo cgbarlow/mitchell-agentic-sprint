@@ -27,25 +27,21 @@ Authored by **Scott Mitchell** (Mitchell Agentic Partners). Working name.
 
 ## Quick start
 
-### Prerequisites
-
-The plugin depends on two upstream Claude Code plugins per [ADR-003](docs/adrs/ADR-003-Sibling-Plugin-Shape.md):
-
-```
-/plugin marketplace add cgbarlow/campaign-mode
-/plugin install campaign-mode@campaign-mode-marketplace
-/plugin install six-animals@campaign-mode-marketplace
-```
-
-Pinned compatibility: `campaign-mode@0.4.8`, `six-animals@0.1.2` (verified 2026-05-08).
-
 ### Install
 
+The Sprint and its two prerequisites (`six-animals`, `campaign-mode`) all ship from the [`cgbarlow/skills`](https://github.com/cgbarlow/skills) marketplace. In a Claude Code session:
+
 ```
-/plugin install mitchell-agentic-sprint
+/plugin marketplace add cgbarlow/skills
+/plugin install six-animals@cgbarlow-skills
+/plugin install campaign-mode@cgbarlow-skills
+/plugin install mitchell-agentic-sprint@cgbarlow-skills
+/reload-plugins
 ```
 
-Or clone into your `.claude/plugins/` directory.
+Pinned compatibility: `campaign-mode@0.4.8`, `six-animals@0.1.2` (verified 2026-05-08). Per [ADR-003](docs/adrs/ADR-003-Sibling-Plugin-Shape.md) those two are hard dependencies — install them first.
+
+Or clone the repos into your `.claude/plugins/` directory if you'd rather skip the marketplace.
 
 ### Optional: NotebookLM MCP bolt-on
 
