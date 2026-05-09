@@ -27,21 +27,56 @@ Authored by **Scott Mitchell** (Mitchell Agentic Partners). Working name.
 
 ## Quick start
 
-### Install
+### Claude Cowork (recommended for MAS)
 
-The Sprint and its two prerequisites (`six-animals`, `campaign-mode`) all ship from the [`cgbarlow/skills`](https://github.com/cgbarlow/skills) marketplace. In a Claude Code session:
+The Sprint is well-suited to Cowork. A six-step validation pipeline runs across multiple sessions over days or weeks, with persistent state at each gate and asynchronous artefact production — that's the shape Cowork is built for. Use Cowork unless you have a reason to prefer the CLI.
 
-```
-/plugin marketplace add cgbarlow/skills
-/plugin install six-animals@cgbarlow-skills
-/plugin install campaign-mode@cgbarlow-skills
-/plugin install mitchell-agentic-sprint@cgbarlow-skills
-/reload-plugins
-```
+1. From the **Cowork** tab in Claude Desktop, select **+** → **Plugins** → **Add plugin**
+2. **Add marketplace** — Select the **By Anthropic** dropdown, then **Add marketplace from GitHub** and enter:
+   ```
+   https://github.com/cgbarlow/skills
+   ```
+3. **Install three plugins** from the marketplace: **Six Animals**, **Campaign Mode**, and **Mitchell Agentic Sprint** (the Sprint depends on the other two; per [ADR-003](docs/adrs/ADR-003-Sibling-Plugin-Shape.md))
+4. **Set up your project** — run:
+   ```
+   /sprint-setup
+   ```
+   One-time pre-flight: verifies prerequisites and optionally onboards the NotebookLM MCP bolt-on (see [below](#optional-notebooklm-mcp-bolt-on)).
+5. **Begin your Sprint** — run:
+   ```
+   /sprint-start
+   ```
+   Step 1 (Discovery) opens with Gandalf framing your unfair advantages, runway, and rough idea.
 
-Pinned compatibility: `campaign-mode@0.4.8`, `six-animals@0.1.2` (verified 2026-05-08). Per [ADR-003](docs/adrs/ADR-003-Sibling-Plugin-Shape.md) those two are hard dependencies — install them first.
+### Claude Code CLI
 
-Or clone the repos into your `.claude/plugins/` directory if you'd rather skip the marketplace.
+For terminal-first users:
+
+1. **Install Claude Code** ([full guide](https://code.claude.com/docs/en/quickstart)):
+   ```bash
+   curl -fsSL https://claude.ai/install.sh | bash
+   ```
+2. **Add the marketplace** — in a Claude Code session:
+   ```
+   /plugin marketplace add cgbarlow/skills
+   ```
+3. **Install the three plugins:**
+   ```
+   /plugin install six-animals@cgbarlow-skills
+   /plugin install campaign-mode@cgbarlow-skills
+   /plugin install mitchell-agentic-sprint@cgbarlow-skills
+   /reload-plugins
+   ```
+4. **Set up your project:**
+   ```
+   /sprint-setup
+   ```
+5. **Begin your Sprint:**
+   ```
+   /sprint-start
+   ```
+
+Pinned compatibility: `campaign-mode@0.4.8`, `six-animals@0.1.2` (verified 2026-05-08). Or clone the repos into your `.claude/plugins/` directory if you'd rather skip the marketplace entirely.
 
 ### Optional: NotebookLM MCP bolt-on
 
@@ -62,18 +97,11 @@ export MAS_NOTEBOOKLM_MCP=1
 
 See [ADR-006](docs/adrs/ADR-006-NotebookLM-MCP-Integration.md) and [SPEC-006-A](docs/adrs/specs/SPEC-006-A-NotebookLM-MCP.md) for the full integration contract.
 
-### Run
-
-```
-/sprint-setup       # one-time pre-flight per project
-/sprint-start       # begin a new Sprint (Step 1: Discovery)
-```
-
 ## Commands
 
 | Command | Step | What it does |
 |---|---|---|
-| [`/sprint-setup`](commands/sprint-setup.md) | one-time | Verifies prerequisite plugins; optionally onboards NotebookLM MCP |
+| [`/sprint-setup`](commands/sprint-setup.md) | one-time | Verifies prerequisite plugins; offers to install the 🧢 Mitchell profile; optionally onboards NotebookLM MCP |
 | [`/sprint-start`](commands/sprint-start.md) | 1 | Step 1 (Discovery) — Gandalf-led founder profile |
 | [`/sprint-step-2`](commands/sprint-step-2.md) | 2 | Vertical Stack — narrow to vertical × sub-vertical × ICP × workflow × AI leverage |
 | [`/sprint-step-3`](commands/sprint-step-3.md) | 3 | Buyer Interviews — Mom Test–linted scripts; saturation detection |
@@ -97,6 +125,12 @@ Five new SKILL.md NPC agents (per [ADR-004](docs/adrs/ADR-004-Mini-Council-Skill
 | 📋 [Grumpy PM](skills/grumpy-pm-agent/SKILL.md) | operational reality — realistic timeline; "what gets dropped on Tuesday" |
 
 The Council fires meaningfully at the Step 1→2 and Step 4→5 transitions.
+
+## Mentor profile — 🧢 Mitchell
+
+The Sprint's framing mentor is campaign-mode's [Gandalf NPC](https://github.com/cgbarlow/campaign-mode/blob/main/skills/gandalf-agent/SKILL.md) — the voice that frames Discovery (Step 1), the Vertical Stack (Step 2), and the expert-framework search (Step 4). MAS ships a profile pack that re-skins Gandalf as **🧢 Mitchell** — Scott Mitchell as the founder-mentor persona, asking the questions he'd ask in a real conversation.
+
+`/sprint-setup` offers to install the profile by default. Decline if you want the default 🧙 Gandalf appearance, or remove `.campaign/profiles/gandalf.md` later. The profile pack itself ships at [`profile-packs/mitchell-agentic-sprint/gandalf.md`](profile-packs/mitchell-agentic-sprint/gandalf.md) and follows campaign-mode's [SPEC-CM-006-A profile format](https://github.com/cgbarlow/campaign-mode/blob/main/docs/3_specs/SPEC-CM-006-A-Character-Profile-Format.md).
 
 ## State
 

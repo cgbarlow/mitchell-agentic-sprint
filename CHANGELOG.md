@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.2.0] - 2026-05-09
+
+Minor feature release. Adds the **🧢 Mitchell profile pack** for the Gandalf NPC and restores the **Cowork-priority README** structure that PR #9's squash dropped. The default Sprint experience now opens with Mitchell as the framing mentor — Scott Mitchell as the founder-mentor persona, asking the questions he'd ask in a real conversation.
+
+### Added
+- **🧢 Mitchell profile pack** — re-skins campaign-mode's Gandalf NPC as Scott Mitchell, the founder-mentor persona. Profile pack file at `profile-packs/mitchell-agentic-sprint/gandalf.md` follows campaign-mode's SPEC-CM-006-A profile format (frontmatter `archetype: gandalf`, `skin-name: "Mitchell"`, `emoji: "🧢"` + Character Concept / Tone and Voice / Name sections).
+- `/sprint-setup` Step 2 — offers to install the Mitchell profile to `.campaign/profiles/gandalf.md` (default install). Handles existing-profile case with keep / overwrite-with-backup / cancel options. Records the decision in `.sprint/setup.md` (`gandalf-profile: installed | declined | preexisting`; `gandalf-skin-name`).
+
+### Changed
+- `plugin.json` version 0.1.0 → 0.2.0 (Cowork update detection)
+- README Quick Start now leads with **Claude Cowork** as the recommended install path, with Claude Code CLI as a secondary section for terminal-first users (mirrors campaign-mode's two-path structure). MAS is shaped like a Cowork workload — a six-step pipeline across multiple sessions over days/weeks with persistent state and asynchronous artefact production.
+- README adds a "Mentor profile — 🧢 Mitchell" subsection between Mini Council voices and State, explaining the re-skin and where to find the profile pack.
+
+[v0.2.0]: https://github.com/cgbarlow/mitchell-agentic-sprint/releases/tag/v0.2.0
+
 ## [v0.1.0] - 2026-05-09
 
 First public release. Mitchell Agentic Sprint as a Claude Code plugin: 6-step linear pipeline (Discovery → Vertical Stack → Buyer Interviews → Framework → Competitor + Positioning Whitespace → Synthesis), adversarial-by-default Mini Council with five domain-knowledgeable NPC voices, deterministic Mom Test linter, theme-saturation detector, structural loopback semantics, three markdown artefact templates (sales deck / outreach plan / pre-seed investor deck) populated from sprint state, and an optional NotebookLM MCP bolt-on for source-grounded synthesis with a Claude-only fallback that keeps every Sprint completable. **89 passing pytest tests** across the four helper modules. Twelve WH(Y) ADRs and eight specs document the build.
