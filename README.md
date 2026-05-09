@@ -37,16 +37,13 @@ The Sprint is well-suited to Cowork. A six-step validation pipeline runs across 
    https://github.com/cgbarlow/skills
    ```
 3. **Install three plugins** from the marketplace: **Six Animals**, **Campaign Mode**, and **Mitchell Agentic Sprint** (the Sprint depends on the other two; per [ADR-003](docs/adrs/ADR-003-Sibling-Plugin-Shape.md))
-4. **Set up your project** — run:
-   ```
-   /sprint-setup
-   ```
-   One-time pre-flight: verifies prerequisites and optionally onboards the NotebookLM MCP bolt-on (see [below](#optional-notebooklm-mcp-bolt-on)).
-5. **Begin your Sprint** — run:
+4. **Begin your Sprint** — run:
    ```
    /sprint-start
    ```
-   Step 1 (Discovery) opens with Gandalf framing your unfair advantages, runway, and rough idea.
+   On the first run in a project, `/sprint-start` auto-invokes setup: prerequisites are verified, the **🧢 Mitchell** profile is offered (default install), and the NotebookLM bolt-on is offered (Cowork users will be pointed at out-of-band install instructions for their own machine — see [below](#optional-notebooklm-mcp-bolt-on)). Then Step 1 (Discovery) opens with Mitchell framing your unfair advantages, runway, and rough idea.
+
+   To re-configure later (install Mitchell after declining, onboard NotebookLM after the fact), call `/sprint-setup` directly.
 
 ### Claude Code CLI
 
@@ -67,14 +64,11 @@ For terminal-first users:
    /plugin install mitchell-agentic-sprint@cgbarlow-skills
    /reload-plugins
    ```
-4. **Set up your project:**
-   ```
-   /sprint-setup
-   ```
-5. **Begin your Sprint:**
+4. **Begin your Sprint:**
    ```
    /sprint-start
    ```
+   First run auto-invokes setup (prerequisites, Mitchell profile, NotebookLM offer). Re-configure later via `/sprint-setup`.
 
 Pinned compatibility: `campaign-mode@0.4.8`, `six-animals@0.1.2` (verified 2026-05-08). Or clone the repos into your `.claude/plugins/` directory if you'd rather skip the marketplace entirely.
 
@@ -82,18 +76,16 @@ Pinned compatibility: `campaign-mode@0.4.8`, `six-animals@0.1.2` (verified 2026-
 
 The Sprint runs without the bolt-on via a Claude-only synthesis fallback. With the bolt-on, Steps 3–6 use NotebookLM for source-grounded synthesis (theme map, expert framework, positioning whitespace, audio overview).
 
+**Install on your own machine** in a regular terminal — Cowork's sandbox runs Python 3.10 and `notebooklm-mcp-cli` requires Python ≥3.11, so the install **cannot** run inside Cowork. CLI users on a Python ≥3.11 host can install in-session via Bash:
+
 ```bash
 pip install "notebooklm-mcp-cli>=0.6.6"
 nlm login                      # browser-based; one-time
-nlm setup add claude-code      # configures Claude Code MCP
+nlm setup add claude-code      # configures Claude Cowork / Code MCP
 nlm doctor                     # diagnose any remaining issues
 ```
 
-Then export the signal so Sprint commands route through the bolt-on:
-
-```bash
-export MAS_NOTEBOOKLM_MCP=1
-```
+After install, **restart Claude Cowork or Claude Code** to pick up the new MCP server. The Sprint reads `.sprint/setup.md` to decide whether to route synthesis through NotebookLM or fall back to Claude-only — re-run `/sprint-setup` after install to flip `notebooklm-mcp: unavailable` to `available`.
 
 See [ADR-006](docs/adrs/ADR-006-NotebookLM-MCP-Integration.md) and [SPEC-006-A](docs/adrs/specs/SPEC-006-A-NotebookLM-MCP.md) for the full integration contract.
 
@@ -101,8 +93,8 @@ See [ADR-006](docs/adrs/ADR-006-NotebookLM-MCP-Integration.md) and [SPEC-006-A](
 
 | Command | Step | What it does |
 |---|---|---|
-| [`/sprint-setup`](commands/sprint-setup.md) | one-time | Verifies prerequisite plugins; offers to install the 🧢 Mitchell profile; optionally onboards NotebookLM MCP |
-| [`/sprint-start`](commands/sprint-start.md) | 1 | Step 1 (Discovery) — Gandalf-led founder profile |
+| [`/sprint-start`](commands/sprint-start.md) | 1 | **The single entry point.** First run auto-invokes setup (verify prereqs → install 🧢 Mitchell profile → offer NotebookLM bolt-on); subsequent runs go straight to Step 1 Discovery framed by Mitchell. |
+| [`/sprint-setup`](commands/sprint-setup.md) | re-config | Re-run only when you want to change setup choices (e.g. install Mitchell after declining, onboard NotebookLM after the fact). Auto-invoked by `/sprint-start` on first run. |
 | [`/sprint-step-2`](commands/sprint-step-2.md) | 2 | Vertical Stack — narrow to vertical × sub-vertical × ICP × workflow × AI leverage |
 | [`/sprint-step-3`](commands/sprint-step-3.md) | 3 | Buyer Interviews — Mom Test–linted scripts; saturation detection |
 | [`/sprint-step-4`](commands/sprint-step-4.md) | 4 | Framework — find the named expert, adapt their framework |

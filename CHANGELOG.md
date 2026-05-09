@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.3.0] - 2026-05-09
+
+UX release. Removes the two-command `/sprint-setup` then `/sprint-start` friction (`/sprint-start` is now the single entry point) and adds first-class **Claude Cowork** support — the setup command no longer requires Bash and the NotebookLM bolt-on instructions account for Cowork's Python 3.10 sandbox limitation.
+
+### Changed
+- **`/sprint-start` auto-invokes setup on first run.** Detects missing `.sprint/setup.md`, runs sprint-setup's Steps 1–5, then continues directly into Step 1 (Discovery). No more two-step UX. `/sprint-setup` remains callable directly for re-configuration.
+- **`/sprint-setup` is Cowork-compatible.** Profile install uses Read + Write instead of `mkdir + cp` (Bash optional), so it works in Cowork's no-shell environment. Existing-profile backup uses Read + Write to `.bak.{date}` instead of `mv`.
+- **NotebookLM bolt-on instructions call out Cowork's Python 3.10 sandbox limitation explicitly.** The bolt-on requires Python ≥3.11; install must happen on the user's own machine, not inside Cowork's sandbox. CLI users on a Python ≥3.11 host can still install in-session.
+- README Quick Start drops the explicit `/sprint-setup` step in both Cowork and CLI paths; just `/sprint-start`.
+- Commands table reorders: `/sprint-start` is the headline entry point; `/sprint-setup` is documented as the re-config command.
+- `plugin.json` version 0.2.0 → 0.3.0 (Cowork update detection)
+
+### Fixed
+- `commands/sprint-start.md` injected-context "Before completing Step 4" reference now correctly points at the renumbered Step 5 (Discovery)
+
+[v0.3.0]: https://github.com/cgbarlow/mitchell-agentic-sprint/releases/tag/v0.3.0
+
 ## [v0.2.0] - 2026-05-09
 
 Minor feature release. Adds the **🧢 Mitchell profile pack** for the Gandalf NPC and restores the **Cowork-priority README** structure that PR #9's squash dropped. The default Sprint experience now opens with Mitchell as the framing mentor — Scott Mitchell as the founder-mentor persona, asking the questions he'd ask in a real conversation.
