@@ -14,8 +14,12 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+# Per ADR-006 / SPEC-006-A — NotebookLM MCP bolt-on. Optional; the Sprint
+# functions without it via the Claude-only fallback path. Verified May 2026
+# against PyPI per Protocol 10. Per Protocol 7 the user should re-verify
+# with Context7 at install time on their own machine.
 notebooklm = [
-  # NotebookLM MCP integration is added in Phase 4 — pin verified package then
+  "notebooklm-mcp-cli>=0.6.6",
 ]
 dev = [
   "pytest>=9.0.3",
