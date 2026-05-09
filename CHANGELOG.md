@@ -16,6 +16,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `commands/sprint-start.md` — Step 1 Discovery flow invoking gandalf-agent with anti-sycophancy posture
 - `commands/sprint-council.md` — single-voice Council invocation (Seed VC) for Phase 1 walking skeleton
 
+### Added — Phase 5 (Steps 5 + 6 + artifact templates + worked example #3)
+- ADR-009 (markdown-first artifacts; defer slide rendering to v0.2.0) and SPEC-009-A (sales deck 6–8 slides, outreach plan 3 sections, investor deck 12 slides + appendix; universal rules of evidence-citation, no-padding, verbatim quotes, 2026-AI-era investor-deck non-negotiables checklist)
+- Three read-only artifact templates: `docs/templates/{sales-deck,outreach-plan,investor-deck}.md` — slide-per-section structure with speaker notes and `{{placeholder}}` markers populated by `/sprint-step-6`
+- `commands/sprint-step-5.md` — Competitor + Positioning Whitespace (concept §4.5) with NotebookLM `notebook_query` integration when MCP available; explicit handling of "no genuine whitespace" finding as a decision point
+- `commands/sprint-step-6.md` — Synthesis (concept §4.6) populating the three markdown artifacts to `.sprint/artifacts/` from sprint state; runs the 2026-AI-era 5-non-negotiable investor-deck checklist; optional NotebookLM `studio_create` audio overview (the one Step 6 artifact without a Claude-only equivalent)
+- `commands/sprint-continue.md` — re-entry dispatcher; reads sprint state, surfaces per-section status, presents context-appropriate next-step options based on `(step, last_approved_step)`
+- `docs/examples/worked-example-3-loopback.md` — full Step 1→6 worked example continuing fictional Sam from worked-example-2; demonstrates artefacts + loopback evidence flowing into a successful attempt 2; canonical reference for "what a finished v0.1.0 Sprint looks like"
+
 ### Added — Phase 4 (Step 4 Framework + NotebookLM MCP integration)
 - ADR-006 (NotebookLM via MCP — non-Enterprise path, optional dependency, Claude-only fallback) and SPEC-006-A (integration points, MCP tool-call pattern, helper API, onboarding flow, on-disk artifact paths)
 - `helpers/notebooklm.py` — pure-function prompt builders for the four NotebookLM integration points (Step 3 theme map, Step 4 framework synthesis, Step 5 positioning whitespace, Step 6 audio overview); `is_mcp_available()` for code-side branching; 21 passing pytest tests verifying anti-sycophancy posture, output format requirements, argument inclusion, and determinism
