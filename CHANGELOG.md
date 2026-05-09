@@ -16,6 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `commands/sprint-start.md` — Step 1 Discovery flow invoking gandalf-agent with anti-sycophancy posture
 - `commands/sprint-council.md` — single-voice Council invocation (Seed VC) for Phase 1 walking skeleton
 
+### Added — Phase 3 (Step 3 Buyer Interviews + linter + saturation)
+- ADR-008 (anti-sycophancy via Dragon-style preambles + behavioural-interview linter) and SPEC-008-A (linter rule registry, 12 rules across 7 categories)
+- `helpers/interview_validator.py` — Mom Test linter with 12 deterministic regex rules; library API + `python -m` CLI; 27 passing pytest tests covering each rule's true-positive/true-negative, structural cases, and CLI exit codes
+- `helpers/saturation.py` — interview-theme saturation detector (concept §4.3 "three in a row" rule, configurable threshold); library API + `python -m` CLI with JSON-default and `--human` output; 19 passing pytest tests
+- `commands/sprint-step-3.md` — 5-sub-flow dispatcher (generate script + outreach / log interview / update theme map / check saturation / conclude). Sub-flow A shells out to the linter and regenerates violating questions before the user sees them. Sub-flow D shells out to the saturation helper.
+- `docs/examples/worked-example-2-prosumer.md` — second worked example showing Step 3 sub-flows end-to-end and a loopback (saturated themes + zero costly-action signals → reset to a paid-newsletter ICP)
+
 ### Added — Phase 2 (Mini Council expansion + Step 2 + loopback)
 - Phase 2 ADRs: ADR-004 (Mini Council as five new SKILL.md NPCs), ADR-007 (per-step gate enforcement via `last_approved_step`)
 - Phase 2 specs: SPEC-004-A (Mini Council SKILL.md format), SPEC-007-A (step gate command flow + friendly-error pattern)
