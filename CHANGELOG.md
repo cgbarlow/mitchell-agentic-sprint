@@ -7,42 +7,66 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Added — Phase 1 (walking skeleton)
-- Build foundation on `feature/v0.1.0`: `.gitignore`, `pyproject.toml` (Python ≥3.11, pytest 9.0.3, pyyaml 6.0.3 — verified 2026-05-08), `CHANGELOG.md`, GitHub Actions test workflow
-- Phase 1 ADRs (001, 002, 003, 005, 010, 011, 012) and specs (SPEC-001-A WH(Y) format, SPEC-003-A plugin manifest, SPEC-005-A sprint state schema)
-- Claude Code plugin manifest (`.claude-plugin/plugin.json`) and marketplace declaration with hard `campaign-mode` (0.4.8) and `six-animals` (0.1.2) dependencies
-- `helpers/sprint_state.py` — read/write of `.sprint/sprint.md`, gate enforcement, loopback semantics, atomic writes (22 passing pytest tests, no mocks per Protocol 8)
-- `skills/seed-vc-agent/SKILL.md` — canonical Mini Council voice (1 of 5); 2026-AI-era pre-seed lens with Dragon-style adversarial tone
-- `commands/sprint-start.md` — Step 1 Discovery flow invoking gandalf-agent with anti-sycophancy posture
-- `commands/sprint-council.md` — single-voice Council invocation (Seed VC) for Phase 1 walking skeleton
+## [v0.1.0] - 2026-05-09
 
-### Added — Phase 5 (Steps 5 + 6 + artifact templates + worked example #3)
-- ADR-009 (markdown-first artifacts; defer slide rendering to v0.2.0) and SPEC-009-A (sales deck 6–8 slides, outreach plan 3 sections, investor deck 12 slides + appendix; universal rules of evidence-citation, no-padding, verbatim quotes, 2026-AI-era investor-deck non-negotiables checklist)
+First public release. Mitchell Agentic Sprint as a Claude Code plugin: 6-step linear pipeline (Discovery → Vertical Stack → Buyer Interviews → Framework → Competitor + Positioning Whitespace → Synthesis), adversarial-by-default Mini Council with five domain-knowledgeable NPC voices, deterministic Mom Test linter, theme-saturation detector, structural loopback semantics, three markdown artefact templates (sales deck / outreach plan / pre-seed investor deck) populated from sprint state, and an optional NotebookLM MCP bolt-on for source-grounded synthesis with a Claude-only fallback that keeps every Sprint completable. **89 passing pytest tests** across the four helper modules. Twelve WH(Y) ADRs and eight specs document the build.
+
+### Added — build foundation (Phase 1)
+- `.gitignore`, `pyproject.toml` (Python ≥3.11, pytest 9.0.3, pyyaml 6.0.3 — verified 2026-05-08 against PyPI per Protocol 10), `CHANGELOG.md`, GitHub Actions test workflow
+- Claude Code plugin manifest (`.claude-plugin/plugin.json`) and marketplace declaration with hard `campaign-mode@0.4.8` and `six-animals@0.1.2` dependencies
+- `helpers/sprint_state.py` — read/write `.sprint/sprint.md`, gate enforcement, loopback semantics, atomic writes (22 passing tests, no mocks per Protocol 8)
+- `skills/seed-vc-agent/SKILL.md` — canonical Mini Council voice with 2026-AI-era pre-seed lens
+- `commands/sprint-start.md` — Step 1 Discovery flow invoking gandalf-agent
+
+### Added — Mini Council expansion + Step 2 + loopback (Phase 2)
+- Four remaining Mini Council voices: `churned-customer-agent`, `competitor-founder-agent`, `future-self-agent`, `grumpy-pm-agent`
+- `commands/sprint-council.md` orchestrating all five voices in sequence; optional single-voice mode; aggregates verdicts into a summary table without voting
+- `commands/sprint-step-2.md` — Vertical Stack with five-layer narrowing (vertical / sub-vertical / ICP / workflow / AI leverage); gated on Step 1 approval per SPEC-007-A
+- `commands/sprint-loopback.md` — concept §7 retain/clear semantics; user names disqualified vertical and reason
+- `docs/examples/worked-example-1-vertical-saas.md` — voice-fidelity reference
+
+### Added — Step 3 Buyer Interviews + linter + saturation (Phase 3)
+- `helpers/interview_validator.py` — Mom Test linter with 12 deterministic regex rules across 7 categories (hypothetical, opinion, leading, pricing-speculation, future-tense, commitment-fishing, validation-seeking); library API + `python -m` CLI (27 passing tests)
+- `helpers/saturation.py` — interview-theme saturation detector (concept §4.3 three-in-a-row rule); library API + `python -m` CLI with JSON-default and `--human` output (19 passing tests)
+- `commands/sprint-step-3.md` — 5-sub-flow dispatcher; sub-flow A shells out to the linter and regenerates violating questions before the user sees them; sub-flow D shells out to the saturation helper
+- `docs/examples/worked-example-2-prosumer.md` — Step 3 sub-flows end-to-end with loopback
+
+### Added — Step 4 Framework + NotebookLM MCP (Phase 4)
+- `helpers/notebooklm.py` — pure-function prompt builders for the four NotebookLM integration points (Step 3 theme map, Step 4 framework synthesis, Step 5 positioning whitespace, Step 6 audio overview); `is_mcp_available()` for code-side branching (21 passing tests verifying anti-sycophancy posture, output format requirements, argument inclusion, determinism)
+- `notebooklm-mcp-cli>=0.6.6` declared as `[notebooklm]` optional extra (verified 2026-05-09 against PyPI)
+- `commands/sprint-setup.md` — one-time pre-flight; verifies prerequisite plugins; optionally onboards NotebookLM MCP (install / `nlm login` / `nlm setup add claude-code` / `nlm doctor`); records outcome to `.sprint/setup.md`
+- `commands/sprint-step-4.md` — 6-sub-flow Step 4 dispatcher (generate 5 candidate experts → pick one → add sources → framework synthesis → reading/watching list → conclude); routes through NotebookLM `notebook_query` MCP tool when available, Claude-only fallback otherwise
+
+### Added — Steps 5 + 6 + artifacts + worked example #3 (Phase 5)
 - Three read-only artifact templates: `docs/templates/{sales-deck,outreach-plan,investor-deck}.md` — slide-per-section structure with speaker notes and `{{placeholder}}` markers populated by `/sprint-step-6`
-- `commands/sprint-step-5.md` — Competitor + Positioning Whitespace (concept §4.5) with NotebookLM `notebook_query` integration when MCP available; explicit handling of "no genuine whitespace" finding as a decision point
-- `commands/sprint-step-6.md` — Synthesis (concept §4.6) populating the three markdown artifacts to `.sprint/artifacts/` from sprint state; runs the 2026-AI-era 5-non-negotiable investor-deck checklist; optional NotebookLM `studio_create` audio overview (the one Step 6 artifact without a Claude-only equivalent)
+- `commands/sprint-step-5.md` — Competitor + Positioning Whitespace (concept §4.5); explicit handling of "no genuine whitespace" finding as a decision point (loopback / proceed / pause)
+- `commands/sprint-step-6.md` — Synthesis (concept §4.6); populates the three markdown artefacts to `.sprint/artifacts/` from sprint state with no padding (`[EVIDENCE MISSING: ...]` markers explicit); runs the 2026-AI-era investor-deck 5-non-negotiables checklist; optional NotebookLM `studio_create` audio overview
 - `commands/sprint-continue.md` — re-entry dispatcher; reads sprint state, surfaces per-section status, presents context-appropriate next-step options based on `(step, last_approved_step)`
-- `docs/examples/worked-example-3-loopback.md` — full Step 1→6 worked example continuing fictional Sam from worked-example-2; demonstrates artefacts + loopback evidence flowing into a successful attempt 2; canonical reference for "what a finished v0.1.0 Sprint looks like"
+- `docs/examples/worked-example-3-loopback.md` — full Step 1→6 worked example continuing fictional Sam from worked-example-2; demonstrates all three populated artefacts plus the audio overview reference
 
-### Added — Phase 4 (Step 4 Framework + NotebookLM MCP integration)
-- ADR-006 (NotebookLM via MCP — non-Enterprise path, optional dependency, Claude-only fallback) and SPEC-006-A (integration points, MCP tool-call pattern, helper API, onboarding flow, on-disk artifact paths)
-- `helpers/notebooklm.py` — pure-function prompt builders for the four NotebookLM integration points (Step 3 theme map, Step 4 framework synthesis, Step 5 positioning whitespace, Step 6 audio overview); `is_mcp_available()` for code-side branching; 21 passing pytest tests verifying anti-sycophancy posture, output format requirements, argument inclusion, and determinism
-- `pyproject.toml` declares `notebooklm-mcp-cli>=0.6.6` as `[notebooklm]` optional extra (verified 2026-05-09 against PyPI per Protocol 10)
-- `commands/sprint-setup.md` — one-time pre-flight; verifies campaign-mode + six-animals; optionally onboards NotebookLM MCP (install / `nlm login` / `nlm setup add claude-code` / `nlm doctor`); records outcome to `.sprint/setup.md`
-- `commands/sprint-step-4.md` — 6-sub-flow Step 4 dispatcher (generate 5 candidate experts → pick one → add sources → framework synthesis → reading/watching list → conclude); shells out to `helpers.notebooklm` for prompt construction; routes through NotebookLM `notebook_query` MCP tool when available, Claude-only fallback otherwise
+### Architecture decisions
+- [ADR-001](docs/adrs/ADR-001-Enhanced-ADR-Format.md) — Adopt enhanced WH(Y) ADR format (ported from `cgbarlow/iris`)
+- [ADR-002](docs/adrs/ADR-002-Build-Tier-Moderate-Plus-NotebookLM.md) — Build tier: Moderate + NotebookLM bolt-on
+- [ADR-003](docs/adrs/ADR-003-Sibling-Plugin-Shape.md) — Sibling-plugin shape with hard `campaign-mode` + `six-animals` deps
+- [ADR-004](docs/adrs/ADR-004-Mini-Council-Skills.md) — Mini Council as five new SKILL.md NPC agents
+- [ADR-005](docs/adrs/ADR-005-Sprint-State-Schema.md) — `.sprint/sprint.md` state schema with named-step sections + loopback support
+- [ADR-006](docs/adrs/ADR-006-NotebookLM-MCP-Integration.md) — NotebookLM via MCP (non-Enterprise, optional, Claude-only fallback)
+- [ADR-007](docs/adrs/ADR-007-Step-Gate-Enforcement.md) — Per-step gate enforcement via `last_approved_step`
+- [ADR-008](docs/adrs/ADR-008-Anti-Sycophancy-Approach.md) — Anti-sycophancy via Dragon-style preambles + behavioural-interview linter
+- [ADR-009](docs/adrs/ADR-009-Markdown-First-Artifacts.md) — Markdown-first artifacts (defer slide rendering to v0.2.0)
+- [ADR-010](docs/adrs/ADR-010-TDD-Scope.md) — TDD on code only; Council voices via worked-example review
+- [ADR-011](docs/adrs/ADR-011-Branch-Strategy.md) — Single `feature/v0.1.0` branch with gated PR review
+- [ADR-012](docs/adrs/ADR-012-Python-And-Pytest-For-Helpers.md) — Python (with pytest) for helpers
 
-### Added — Phase 3 (Step 3 Buyer Interviews + linter + saturation)
-- ADR-008 (anti-sycophancy via Dragon-style preambles + behavioural-interview linter) and SPEC-008-A (linter rule registry, 12 rules across 7 categories)
-- `helpers/interview_validator.py` — Mom Test linter with 12 deterministic regex rules; library API + `python -m` CLI; 27 passing pytest tests covering each rule's true-positive/true-negative, structural cases, and CLI exit codes
-- `helpers/saturation.py` — interview-theme saturation detector (concept §4.3 "three in a row" rule, configurable threshold); library API + `python -m` CLI with JSON-default and `--human` output; 19 passing pytest tests
-- `commands/sprint-step-3.md` — 5-sub-flow dispatcher (generate script + outreach / log interview / update theme map / check saturation / conclude). Sub-flow A shells out to the linter and regenerates violating questions before the user sees them. Sub-flow D shells out to the saturation helper.
-- `docs/examples/worked-example-2-prosumer.md` — second worked example showing Step 3 sub-flows end-to-end and a loopback (saturated themes + zero costly-action signals → reset to a paid-newsletter ICP)
+### Deferred to v0.2.0+
+- Slide rendering (PPTX/PDF generation via python-pptx)
+- WebSearch + scrape pipeline for Step 4/5 (currently relies on user-pasted inputs or NotebookLM)
+- Anti-sycophancy regression eval set
+- NotebookLM Enterprise API path
+- Sales Navigator filter generator
+- CRM integration for outreach
+- Theme clustering beyond simple count saturation
+- Profile-pack themes for Council voices
 
-### Added — Phase 2 (Mini Council expansion + Step 2 + loopback)
-- Phase 2 ADRs: ADR-004 (Mini Council as five new SKILL.md NPCs), ADR-007 (per-step gate enforcement via `last_approved_step`)
-- Phase 2 specs: SPEC-004-A (Mini Council SKILL.md format), SPEC-007-A (step gate command flow + friendly-error pattern)
-- Four remaining Mini Council voices: `churned-customer-agent`, `competitor-founder-agent`, `future-self-agent`, `grumpy-pm-agent` — each with voice-specific Foundation, Core Skills, and three-verdict Council Output Format
-- `commands/sprint-council.md` rewritten to orchestrate all five voices in sequence (with optional single-voice mode); aggregates verdicts into a summary table without voting
-- `commands/sprint-step-2.md` — Vertical Stack work; gated on Step 1 approval; invokes Gandalf with the five-layer narrowing (vertical / sub-vertical / ICP / workflow / AI leverage); auto-approves on artifact completion
-- `commands/sprint-loopback.md` — concept §7 retain/clear semantics; user names disqualified vertical and reason; clears Vertical Stack / Competitor Map / Positioning Whitespace / Artifacts; retains Builder Profile / Backup Verticals / Interview Log / Theme Map / Costly-Action Signals / Expert Framework / Loopback Log / Progress Log
-- `docs/examples/worked-example-1-vertical-saas.md` — voice-fidelity reference per ADR-010; demonstrates the five voices producing meaningfully different critiques on the same input
+[Unreleased]: https://github.com/cgbarlow/mitchell-agentic-sprint/compare/v0.1.0...HEAD
+[v0.1.0]: https://github.com/cgbarlow/mitchell-agentic-sprint/releases/tag/v0.1.0
