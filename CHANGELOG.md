@@ -16,6 +16,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - `commands/sprint-start.md` — Step 1 Discovery flow invoking gandalf-agent with anti-sycophancy posture
 - `commands/sprint-council.md` — single-voice Council invocation (Seed VC) for Phase 1 walking skeleton
 
+### Added — Phase 4 (Step 4 Framework + NotebookLM MCP integration)
+- ADR-006 (NotebookLM via MCP — non-Enterprise path, optional dependency, Claude-only fallback) and SPEC-006-A (integration points, MCP tool-call pattern, helper API, onboarding flow, on-disk artifact paths)
+- `helpers/notebooklm.py` — pure-function prompt builders for the four NotebookLM integration points (Step 3 theme map, Step 4 framework synthesis, Step 5 positioning whitespace, Step 6 audio overview); `is_mcp_available()` for code-side branching; 21 passing pytest tests verifying anti-sycophancy posture, output format requirements, argument inclusion, and determinism
+- `pyproject.toml` declares `notebooklm-mcp-cli>=0.6.6` as `[notebooklm]` optional extra (verified 2026-05-09 against PyPI per Protocol 10)
+- `commands/sprint-setup.md` — one-time pre-flight; verifies campaign-mode + six-animals; optionally onboards NotebookLM MCP (install / `nlm login` / `nlm setup add claude-code` / `nlm doctor`); records outcome to `.sprint/setup.md`
+- `commands/sprint-step-4.md` — 6-sub-flow Step 4 dispatcher (generate 5 candidate experts → pick one → add sources → framework synthesis → reading/watching list → conclude); shells out to `helpers.notebooklm` for prompt construction; routes through NotebookLM `notebook_query` MCP tool when available, Claude-only fallback otherwise
+
 ### Added — Phase 3 (Step 3 Buyer Interviews + linter + saturation)
 - ADR-008 (anti-sycophancy via Dragon-style preambles + behavioural-interview linter) and SPEC-008-A (linter rule registry, 12 rules across 7 categories)
 - `helpers/interview_validator.py` — Mom Test linter with 12 deterministic regex rules; library API + `python -m` CLI; 27 passing pytest tests covering each rule's true-positive/true-negative, structural cases, and CLI exit codes
