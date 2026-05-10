@@ -1,0 +1,44 @@
+remote_theme: pages-themes/architect@v0.2.0
+title: Mitchell Agentic Sprint
+description: AI-led 6-step sprint that walks an AI builder through validating one idea — vertical, buyers, framework, positioning — to a sales deck, outreach plan, and pre-seed investor deck. Adversarial by default. Output is artifacts, not product.
+url: https://chrisbarlow.nz
+baseurl: /mitchell-agentic-sprint
+lang: en_NZ
+
+author:
+  name: Chris Barlow
+  url: https://chrisbarlow.nz
+
+social:
+  name: Chris Barlow
+  links:
+    - https://www.linkedin.com/in/cgbarlow/
+    - https://github.com/cgbarlow
+    - https://unchartedquests.substack.com/
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  typographic_symbols:
+    mdash: "---"
+    ndash: "--"
+
+plugins:
+  - jekyll-remote-theme
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Plugin-internal files and helpers — exclude from the published Pages site.
+exclude:
+  - .claude-plugin/
+  - commands/
+  - helpers/
+  - profile-packs/
+  - skills/
+  - tests/
+  - .venv/
+  - .pytest_cache/
+  - pyproject.toml
+  - Gemfile
+  - Gemfile.lock
+  - vendor/
