@@ -1,5 +1,5 @@
 ---
-description: Start a Mitchell Agentic Sprint — six-step validation pipeline that walks an AI-strong builder from rough idea to investor-conversation-ready artifacts
+description: Start a Mitchell Agentic Sprint. Auto-runs first-time setup if needed, then begins Step 1 (Discovery). The single entry point — users never need to remember /sprint-setup separately.
 allowed-tools: [Read, Write, Glob, Bash, Edit, AskUserQuestion]
 ---
 
@@ -9,7 +9,25 @@ You are beginning a new Mitchell Agentic Sprint for the user. The Sprint walks t
 
 Follow these steps in order.
 
-## Step 1: Check for active sprint
+## Step 1: Run first-time setup if needed (auto)
+
+Use the Glob tool to check whether `.sprint/setup.md` exists in the user's project root.
+
+**If `.sprint/setup.md` does NOT exist:**
+
+This is the user's first run in this project. Tell them briefly:
+
+> First-time setup running — this is a one-time pre-flight per project. Verifying prerequisites, optionally installing the 🧢 Mitchell profile, and offering the NotebookLM MCP bolt-on.
+
+Now read `${CLAUDE_PLUGIN_ROOT}/commands/sprint-setup.md` and execute its **Step 1 through Step 5** (Verify prerequisites → Install Mitchell profile → Choose NotebookLM path → Onboard NotebookLM → Record setup decisions). The user goes through the AskUserQuestion prompts in those steps as normal.
+
+**Skip sprint-setup's Step 6** (the "Start a Sprint now / Done — exit setup" confirmation) — we're already starting a Sprint, so the confirmation is redundant. After Step 5 writes `.sprint/setup.md`, return here and proceed to Step 2 below.
+
+**If sprint-setup's Step 1 stops early** (because campaign-mode or six-animals is missing), stop here too. The user must install the prerequisite plugins before the Sprint can begin.
+
+**If `.sprint/setup.md` already exists:** the user has done setup previously. Skip directly to Step 2 below. (If they want to re-configure — install the Mitchell profile after declining, or onboard NotebookLM after the fact — they can run `/sprint-setup` separately.)
+
+## Step 2: Check for active sprint
 
 Use the Glob tool to check if `.sprint/sprint.md` exists in the user's project root.
 
@@ -18,16 +36,16 @@ Use the Glob tool to check if `.sprint/sprint.md` exists in the user's project r
 Read the file. Note the current `step`, `last_approved_step`, and `attempt` from the frontmatter. Use `AskUserQuestion` to offer:
 
 1. **Continue the active sprint** — pick up where you left off (use `/sprint-continue`)
-2. **Start fresh** — archive the existing sprint to `.sprint/archive/{YYYY-MM-DD}-sprint.md` and proceed to Step 2 below
+2. **Start fresh** — archive the existing sprint to `.sprint/archive/{YYYY-MM-DD}-sprint.md` and proceed to Step 3 below
 3. **Cancel** — make no changes
 
 Include current state in the question field so the user has context (e.g., "You have an active sprint: step {N}, attempt {N}, last approved step {N}. What would you like to do?").
 
 If the user chooses "Start fresh", use Bash to `mkdir -p .sprint/archive` and `mv .sprint/sprint.md .sprint/archive/$(date +%Y-%m-%d)-sprint.md` before proceeding.
 
-**If `.sprint/sprint.md` does not exist:** proceed directly to Step 2.
+**If `.sprint/sprint.md` does not exist:** proceed directly to Step 3.
 
-## Step 2: Choose Sprint Mode
+## Step 3: Choose Sprint Mode
 
 Use `AskUserQuestion`:
 
@@ -39,7 +57,7 @@ Options:
 1. **Solo** — work the sprint alone with AI advisors only
 2. **Coached** — external coach reviews your artifacts between steps
 
-## Step 3: Initialise sprint state
+## Step 4: Initialise sprint state
 
 Use Bash to create the sprint state directory:
 
@@ -84,7 +102,7 @@ created: {TODAY}
 ## Progress Log
 ```
 
-## Step 4: Step 1 — Discovery (invoke Gandalf)
+## Step 5: Step 1 of the Sprint — Discovery (invoke Gandalf)
 
 You will now run the Discovery step. Adopt the full Gandalf identity from the campaign-mode plugin and conduct the Step 1 interview.
 
@@ -111,7 +129,7 @@ After Gandalf concludes Step 1, append a Progress Log entry to `.sprint/sprint.m
 - **Progress** — Step 1 (Discovery) completed; Builder Profile written ({TODAY})
 ```
 
-## Step 5: Offer next-step options
+## Step 6: Offer next-step options
 
 Use `AskUserQuestion` to present the user with their options now that Step 1 is complete:
 
@@ -129,11 +147,11 @@ Options:
 
 ## Injected Context
 
-The following files contain essential context for this command. Their absolute paths are resolved below. **Before completing Step 4, use the Read tool to load every file listed in this section.** Read them in parallel if possible.
+The following files contain essential context for this command. Their absolute paths are resolved below. **Before completing Step 5, use the Read tool to load every file listed in this section.** Read them in parallel if possible.
 
-If any path below is empty or shows an error, the plugin root could not be resolved. Inform the user and suggest running `/sprint-setup` (Phase 4 onwards) to install dependencies.
+If any path below is empty or shows an error, the plugin root could not be resolved. Inform the user that the plugin install may be incomplete.
 
 - Plugin root: !`echo ${CLAUDE_PLUGIN_ROOT}`
-- Sprint protocols (build-time): !`echo ${CLAUDE_PLUGIN_ROOT}/docs/protocols.md`
+- Setup command (Step 1 reads this when first-time setup is needed): !`echo ${CLAUDE_PLUGIN_ROOT}/commands/sprint-setup.md`
 - Sprint state schema (SPEC-005-A): !`echo ${CLAUDE_PLUGIN_ROOT}/docs/adrs/specs/SPEC-005-A-Sprint-State-Schema.md`
 - Concept document: !`echo ${CLAUDE_PLUGIN_ROOT}/docs/concept/concept.md`
