@@ -76,19 +76,19 @@ Pinned compatibility: `campaign-mode@0.4.8`, `six-animals@0.1.2` (verified 2026-
 
 The Sprint runs without the bolt-on via a Claude-only synthesis fallback. With the bolt-on, Steps 3–6 use NotebookLM for source-grounded synthesis (theme map, expert framework, positioning whitespace, audio overview).
 
-`notebooklm-mcp-cli` requires Python ≥3.11; Cowork's sandbox runs Python 3.10. The setup command works around this by using [`uv`](https://docs.astral.sh/uv/), which downloads prebuilt Python 3.11 binaries on demand — so the in-Cowork install usually works:
+**The bolt-on installs on your Mac, not in Cowork's sandbox.** Even if you install it inside Cowork, the wire-up command (`nlm setup add claude-code`) modifies a local Claude Desktop config file on your Mac that Cowork's sandbox cannot reach — so the sandbox install accomplishes nothing. Run these in a regular terminal on your Mac (or on the host running Claude Code, if you're a CLI user):
 
 ```bash
-# uv provisions Python 3.11 automatically; works on 3.10 sandboxes too
-pip install uv
-uv tool install "notebooklm-mcp-cli>=0.6.6"
+uv tool install "notebooklm-mcp-cli>=0.6.6"   # uv handles Python ≥3.11 automatically
+# or: pip install "notebooklm-mcp-cli>=0.6.6" (needs Python ≥3.11)
+# or: pipx install notebooklm-mcp-cli
 
-nlm login                      # browser-based; one-time (you do this)
+nlm login                      # browser-based; one-time
 nlm setup add claude-code      # wires up MCP for Cowork / Code
 nlm doctor                     # verify
 ```
 
-If Cowork's sandbox blocks `uv`'s Python download (network or filesystem restrictions), fall back to installing on your own machine — the same commands work in a regular terminal. After install, **restart Claude Cowork or Claude Code** to pick up the new MCP server. The Sprint reads `.sprint/setup.md` to decide whether to route synthesis through NotebookLM or fall back to Claude-only — re-run `/sprint-setup` after install to flip `notebooklm-mcp: unavailable` to `available`.
+After install, **restart Claude Cowork or Claude Code**. Cowork's bridge picks up the MCP server from your local Claude Desktop config on next launch ([Anthropic support: Cowork + local MCP](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop)). The Sprint reads `.sprint/setup.md` to decide whether to route synthesis through NotebookLM or fall back to Claude-only — re-run `/sprint-setup` after install to flip `notebooklm-mcp: unavailable` to `available`.
 
 See [ADR-006](docs/adrs/ADR-006-NotebookLM-MCP-Integration.md) and [SPEC-006-A](docs/adrs/specs/SPEC-006-A-NotebookLM-MCP.md) for the full integration contract.
 
