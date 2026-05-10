@@ -99,9 +99,15 @@ Options:
 2. **I'm in Claude Code CLI and want to wire up NotebookLM** — proceed to Step 4
 3. **I already have it configured** — proceed to Step 5 (no install work needed)
 
-## Step 4: NotebookLM install — local-machine commands
+## Step 4: NotebookLM install — Claude Code CLI only
 
-**Do not attempt the install in Cowork's sandbox.** Even if it succeeds (the package may install fine in the sandbox), the wire-up step that actually matters — `nlm setup add claude-code` — modifies a Claude Desktop config file on **your local machine** that the sandbox can't reach. So the install has to run on your local machine regardless. The commands work identically on macOS, Windows, and Linux.
+**This path applies to Claude Code CLI users only.** If the user picked option 2 in Step 3 while running Cowork, the bolt-on will not function — `nlm setup add claude-code` writes to Claude Code (CLI)'s user-scope config (`~/.claude/...`), not Claude Desktop's `claude_desktop_config.json`. And per [Anthropic's Cowork + local MCP docs](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop), Cowork only bridges remote MCP servers (custom connectors) — local stdio MCPs from Claude Desktop's config aren't surfaced in Cowork either, so even manual config-editing wouldn't help.
+
+If you suspect the user is in Cowork (e.g., `${CLAUDE_PLUGIN_ROOT}` resolves to a sandbox-style path, or they mentioned Cowork earlier), surface this before running anything:
+
+> Heads up — if you're running this from Cowork, the bolt-on won't function. The `nlm setup add claude-code` step writes to Claude Code (CLI)'s config, not Claude Desktop's. Cowork doesn't bridge local stdio MCP servers from `claude_desktop_config.json` either, so even editing that manually wouldn't help. The bolt-on is Claude Code CLI only in v0.3.x. Want to skip and continue with Claude-only synthesis?
+
+If they confirm they're in Claude Code CLI (not Cowork), proceed with the install instructions below. The commands work identically on macOS, Windows, and Linux.
 
 Tell the user:
 
