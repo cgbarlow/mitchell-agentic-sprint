@@ -87,7 +87,7 @@ Use `AskUserQuestion`:
 >
 > The Sprint can use Google NotebookLM as a synthesis layer for Steps 3–6 (theme map, expert framework, positioning whitespace, audio overview). It improves quality on those steps and aligns with the concept's "verbatim quotes only" rule.
 >
-> **Where to install it:** the install must happen on your **own machine** in a regular terminal. The package (`notebooklm-mcp-cli`) requires Python ≥3.11 — Cowork's sandbox runs Python 3.10, so the install **cannot** run inside Cowork. CLI users on a host with Python ≥3.11 can install in-session. Once installed locally and \`nlm setup add claude-code\` is run, Cowork's MCP integration picks up the server automatically when you next open it.
+> **Where to install it:** `notebooklm-mcp-cli` requires Python ≥3.11. Cowork's sandbox runs Python 3.10, **but** [`uv`](https://docs.astral.sh/uv/) can provision Python 3.11 on demand inside the sandbox by downloading prebuilt binaries — so an in-Cowork install via `uv tool install notebooklm-mcp-cli` usually works. The setup command tries that first. If the sandbox blocks it (network restrictions, filesystem permissions), fall back to installing on your own machine in a regular terminal. CLI users on a Python ≥3.11 host can install via plain pip in-session. After install, **restart Claude Cowork or Claude Code** to pick up the new MCP server.
 >
 > Without the bolt-on, the Sprint uses Claude-only synthesis for Steps 3–5; Step 6's audio overview is unavailable. Everything else works.
 
@@ -97,56 +97,55 @@ Options:
 2. **Skip and use Claude-only synthesis** — proceed to Step 5
 3. **I already configured it** — proceed to Step 5 (no install work needed)
 
-## Step 4: NotebookLM install instructions
+## Step 4: NotebookLM install — try `uv` first
 
-Tell the user (do NOT auto-install in Cowork — it will fail with a Python version error):
+The recommended install path uses [`uv`](https://docs.astral.sh/uv/) because uv provisions Python 3.11 itself by downloading prebuilt binaries — sidestepping Cowork's Python 3.10 sandbox limitation. It also works fine on plain Python ≥3.11 hosts (CLI sessions).
 
-> Run these in a regular terminal on **your own machine** — not in Cowork's sandbox (which runs Python 3.10 and cannot install `notebooklm-mcp-cli`, which requires Python ≥3.11).
+### Step 4.1: Attempt the install
+
+If Bash is available, ask the user via `AskUserQuestion` whether to run the install in-session (the user must run `nlm login` themselves regardless — it opens a browser). If they confirm, run:
+
+```bash
+# Install uv if it's not already there (idempotent)
+command -v uv >/dev/null 2>&1 || pip install --quiet uv
+
+# Install the unified CLI + MCP server. uv provisions Python 3.11
+# automatically if the host Python is older.
+uv tool install "notebooklm-mcp-cli>=0.6.6"
+```
+
+If `uv tool install` succeeds, continue to Step 4.2.
+
+**If `uv tool install` fails** (network blocks, sandbox restrictions, or any other error), surface the error to the user and fall back to host-machine install. Tell them:
+
+> The in-session install didn't work — likely Cowork's sandbox blocks something `uv` needs (downloading the Python 3.11 binary, or running it). Run these on **your own machine** in a regular terminal instead:
 >
 > ```bash
-> # 1. Install the unified CLI + MCP server (one of these)
+> # one of (in order of preference):
+> uv tool install "notebooklm-mcp-cli>=0.6.6"
+> # or, on a Python ≥3.11 host:
 > pip install "notebooklm-mcp-cli>=0.6.6"
-> # or: uv tool install notebooklm-mcp-cli
-> # or: pipx install notebooklm-mcp-cli
->
-> # 2. One-time browser-based Google login
-> nlm login
->
-> # 3. Wire up Claude's MCP integration
-> nlm setup add claude-code
->
-> # 4. Verify
-> nlm doctor
+> # or:
+> pipx install notebooklm-mcp-cli
 > ```
->
-> Cookies persist locally; you only run \`nlm login\` once. After \`nlm setup add claude-code\` completes, **restart Claude Cowork / Claude Code** to pick up the new MCP server.
->
-> **CLI users on a Python ≥3.11 host**: if you'd like, I can run steps 1, 3, and 4 in this session via Bash. Step 2 (\`nlm login\`) you must run yourself — it opens a browser.
 
-If Bash is available **and** Python ≥3.11 is on PATH **and** the user explicitly confirms via `AskUserQuestion`, attempt the install. Verify Python first:
+If Bash is **not** available (Cowork without sandbox, or restricted CLI), skip the in-session attempt and go straight to the host-machine instructions above.
 
-```bash
-python3 --version 2>&1 | grep -E "Python 3\.(1[1-9]|[2-9][0-9])"
-```
+### Step 4.2: Login + MCP wire-up
 
-If that grep matches (Python 3.11+), proceed:
+The user runs these themselves — `nlm login` opens a browser and the user has to authenticate to Google:
 
 ```bash
-pip install "notebooklm-mcp-cli>=0.6.6"
+nlm login                      # browser-based; one-time
+nlm setup add claude-code      # wires up Claude's MCP integration
+nlm doctor                     # verify
 ```
 
-Otherwise stop and tell the user to install on their own machine instead — Python is too old in this environment.
+After `nlm setup add claude-code` completes, **restart Claude Cowork or Claude Code** to pick up the new MCP server. Cookies persist locally; subsequent sessions use the saved login.
 
-Then prompt the user to run `nlm login` themselves. After they confirm completion, run:
+### Step 4.3: Confirm
 
-```bash
-nlm setup add claude-code
-nlm doctor
-```
-
-Surface any `nlm doctor` output.
-
-After the user confirms install completion (or that they've done it out-of-band):
+After the user reports completion:
 
 Use `AskUserQuestion`:
 

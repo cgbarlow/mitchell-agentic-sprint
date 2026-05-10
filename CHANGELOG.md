@@ -14,7 +14,7 @@ UX release. Removes the two-command `/sprint-setup` then `/sprint-start` frictio
 ### Changed
 - **`/sprint-start` auto-invokes setup on first run.** Detects missing `.sprint/setup.md`, runs sprint-setup's Steps 1–5, then continues directly into Step 1 (Discovery). No more two-step UX. `/sprint-setup` remains callable directly for re-configuration.
 - **`/sprint-setup` is Cowork-compatible.** Profile install uses Read + Write instead of `mkdir + cp` (Bash optional), so it works in Cowork's no-shell environment. Existing-profile backup uses Read + Write to `.bak.{date}` instead of `mv`.
-- **NotebookLM bolt-on instructions call out Cowork's Python 3.10 sandbox limitation explicitly.** The bolt-on requires Python ≥3.11; install must happen on the user's own machine, not inside Cowork's sandbox. CLI users on a Python ≥3.11 host can still install in-session.
+- **NotebookLM bolt-on now installs via `uv tool install` to work around Cowork's Python 3.10 sandbox.** `uv` provisions Python 3.11 on demand by downloading prebuilt binaries, so the in-Cowork install usually succeeds without leaving the sandbox. Setup tries `uv tool install` first; if that fails (network/filesystem restrictions in the sandbox), falls back to host-machine install instructions. CLI users on Python ≥3.11 hosts get the same `uv tool install` path which also works fine.
 - README Quick Start drops the explicit `/sprint-setup` step in both Cowork and CLI paths; just `/sprint-start`.
 - Commands table reorders: `/sprint-start` is the headline entry point; `/sprint-setup` is documented as the re-config command.
 - `plugin.json` version 0.2.0 → 0.3.0 (Cowork update detection)

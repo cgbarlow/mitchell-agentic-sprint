@@ -76,16 +76,19 @@ Pinned compatibility: `campaign-mode@0.4.8`, `six-animals@0.1.2` (verified 2026-
 
 The Sprint runs without the bolt-on via a Claude-only synthesis fallback. With the bolt-on, Steps 3–6 use NotebookLM for source-grounded synthesis (theme map, expert framework, positioning whitespace, audio overview).
 
-**Install on your own machine** in a regular terminal — Cowork's sandbox runs Python 3.10 and `notebooklm-mcp-cli` requires Python ≥3.11, so the install **cannot** run inside Cowork. CLI users on a Python ≥3.11 host can install in-session via Bash:
+`notebooklm-mcp-cli` requires Python ≥3.11; Cowork's sandbox runs Python 3.10. The setup command works around this by using [`uv`](https://docs.astral.sh/uv/), which downloads prebuilt Python 3.11 binaries on demand — so the in-Cowork install usually works:
 
 ```bash
-pip install "notebooklm-mcp-cli>=0.6.6"
-nlm login                      # browser-based; one-time
-nlm setup add claude-code      # configures Claude Cowork / Code MCP
-nlm doctor                     # diagnose any remaining issues
+# uv provisions Python 3.11 automatically; works on 3.10 sandboxes too
+pip install uv
+uv tool install "notebooklm-mcp-cli>=0.6.6"
+
+nlm login                      # browser-based; one-time (you do this)
+nlm setup add claude-code      # wires up MCP for Cowork / Code
+nlm doctor                     # verify
 ```
 
-After install, **restart Claude Cowork or Claude Code** to pick up the new MCP server. The Sprint reads `.sprint/setup.md` to decide whether to route synthesis through NotebookLM or fall back to Claude-only — re-run `/sprint-setup` after install to flip `notebooklm-mcp: unavailable` to `available`.
+If Cowork's sandbox blocks `uv`'s Python download (network or filesystem restrictions), fall back to installing on your own machine — the same commands work in a regular terminal. After install, **restart Claude Cowork or Claude Code** to pick up the new MCP server. The Sprint reads `.sprint/setup.md` to decide whether to route synthesis through NotebookLM or fall back to Claude-only — re-run `/sprint-setup` after install to flip `notebooklm-mcp: unavailable` to `available`.
 
 See [ADR-006](docs/adrs/ADR-006-NotebookLM-MCP-Integration.md) and [SPEC-006-A](docs/adrs/specs/SPEC-006-A-NotebookLM-MCP.md) for the full integration contract.
 
