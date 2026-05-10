@@ -14,7 +14,7 @@ Authored by **Scott Mitchell** (Mitchell Agentic Partners). Working name.
 
 ## Status
 
-**v0.1.0** — Claude Code plugin. The six steps are wired end-to-end with optional NotebookLM MCP augmentation for synthesis. Slide rendering (PPTX/PDF) and an anti-sycophancy regression eval set are deferred to v0.2.0+ per [ADR-009](docs/adrs/ADR-009-Markdown-First-Artifacts.md) and [ADR-002](docs/adrs/ADR-002-Build-Tier-Moderate-Plus-NotebookLM.md).
+**v0.3.2** — Claude Code + Cowork plugin testing. Ironed out a few bugs, trying out the workflow to see if it works end to end!
 
 ## Design principles
 
