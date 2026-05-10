@@ -79,26 +79,24 @@ Confirm to the user:
 
 Continue to Step 3.
 
-## Step 3: Choose NotebookLM MCP path (optional, power-user setup)
+## Step 3: Choose NotebookLM MCP path (Claude Code CLI only — not Cowork)
 
 Use `AskUserQuestion`:
 
-> **NotebookLM MCP bolt-on (optional — power-user setup, not the default).**
+> **NotebookLM MCP bolt-on — Claude Code CLI only; does NOT work in Claude Cowork.**
 >
-> The Sprint can use Google NotebookLM for Steps 3–6 synthesis (theme map, expert framework, positioning whitespace, plus an audio overview in Step 6). It improves quality and adds the audio-briefing artefact.
+> The Sprint can optionally use Google NotebookLM for Steps 3–6 synthesis (theme map, expert framework, positioning whitespace, plus an audio overview in Step 6). It improves quality and adds the audio-briefing artefact.
 >
-> **What you're signing up for** if you choose to set it up:
-> - Run **4 commands in a terminal on your local machine** (Cowork's sandbox cannot do any of this for you — it's a remote VM with no access to your local Claude Desktop config or browser)
-> - One of those is a **browser-based Google login** that opens locally on your local machine
-> - You'll then **restart Claude Cowork or Claude Code** so the MCP integration is picked up
-> - The setup is a one-time per-machine cost; cookies persist
+> **Important platform constraint:** the `notebooklm-mcp-cli` package wires up via `nlm setup add claude-code`, which writes to Claude Code (CLI)'s user-scope MCP config (`~/.claude/...`). It does **not** write to Claude Desktop's `claude_desktop_config.json`, and Cowork only bridges remote MCP servers (custom connectors) — local stdio MCPs in Claude Desktop's config are not available in Cowork ([Anthropic support: Cowork + local MCP](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop)). So if the user is in Cowork, **NotebookLM cannot be wired up via this bolt-on at all** in v0.3.x.
 >
-> **Most users skip this.** The Sprint completes fine with Claude doing the synthesis directly — you lose the NotebookLM-specific audio overview, but the three written artefacts (sales deck, outreach plan, investor deck) are produced equally well either way.
+> **If you're in Cowork:** skip this option. The Sprint completes fine with Claude doing the synthesis directly — you lose the NotebookLM audio overview, but the three written artefacts (sales deck, outreach plan, investor deck) are produced equally well.
+>
+> **If you're in Claude Code CLI:** you can opt in. Setup is one-time per machine — install `notebooklm-mcp-cli`, run `nlm login` (browser-based Google login), `nlm setup add claude-code`, restart Claude Code.
 
 Options:
 
-1. **Skip — use Claude-only synthesis (Recommended for most users)** — proceed to Step 5; you can re-run `/sprint-setup` later if you change your mind
-2. **I'm comfortable with the local-machine setup — show me the commands** — proceed to Step 4
+1. **Skip — use Claude-only synthesis (Recommended for most users; required for Cowork)** — proceed to Step 5; you can re-run `/sprint-setup` later if you change your mind
+2. **I'm in Claude Code CLI and want to wire up NotebookLM** — proceed to Step 4
 3. **I already have it configured** — proceed to Step 5 (no install work needed)
 
 ## Step 4: NotebookLM install — local-machine commands
@@ -130,9 +128,9 @@ Tell the user:
 > nlm doctor
 > ```
 >
-> Cookies persist locally; you only run `nlm login` once. After `nlm setup add claude-code` completes, **restart Claude Cowork** (or Claude Code, whichever you're using). Cowork's bridge picks up the MCP server from your local Claude Desktop config on next launch.
+> Cookies persist locally; you only run `nlm login` once. After `nlm setup add claude-code` completes, **restart Claude Code** to pick up the new MCP server. (Restarting Cowork won't help — the bolt-on doesn't wire up to Cowork; see Step 3.)
 
-If the user is in **Claude Code CLI** running on the host that has Python ≥3.11 + a browser (uncommon edge case — most people run CLI on a host that *is* their Mac), and they explicitly opt in via `AskUserQuestion`, you can run steps 1, 3, and 4 in-session via Bash. Step 2 (`nlm login`) the user always runs themselves because it's a browser handshake. **Do not attempt this in Cowork's sandbox** — even if Bash is available there, the install will not benefit Cowork's MCP integration.
+If the user is in **Claude Code CLI** running on a host with Python ≥3.11 + a browser, and they explicitly opt in via `AskUserQuestion`, you can run steps 1, 3, and 4 in-session via Bash. Step 2 (`nlm login`) the user always runs themselves because it's a browser handshake. **Do not attempt this in Cowork's sandbox** — Cowork doesn't pick up the MCP integration anyway, so there's nothing to gain.
 
 ### Step 4 confirm
 
