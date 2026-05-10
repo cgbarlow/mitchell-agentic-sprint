@@ -1,4 +1,4 @@
-# Mitchell Agentic Sprint
+# 🧢 Mitchell Agentic Sprint
 
 A Claude Code plugin that walks an AI-strong builder through six sequential steps to take one of their many ideas and prove out whether it can become a real business — adversarial by default, refusing flattery, demanding verbatim evidence.
 
