@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.3.1] - 2026-05-10
+
+### Fixed
+- `/sprint-setup` Step 3 NotebookLM choice options reworded to reflect what each option actually does. Option 1 was "I want the bolt-on — show me the install instructions" (passive-sounding); now reads "Install it now" since Step 4 actually attempts the install via `uv` rather than just printing instructions. Options 2 and 3 also tightened: "Skip — use Claude-only synthesis" and "I already have it configured".
+
+[v0.3.1]: https://github.com/cgbarlow/mitchell-agentic-sprint/releases/tag/v0.3.1
+
 ## [v0.3.0] - 2026-05-09
 
 UX release. Removes the two-command `/sprint-setup` then `/sprint-start` friction (`/sprint-start` is now the single entry point) and adds first-class **Claude Cowork** support — the setup command no longer requires Bash and the NotebookLM bolt-on instructions account for Cowork's Python 3.10 sandbox limitation.

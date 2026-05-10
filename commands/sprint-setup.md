@@ -93,9 +93,9 @@ Use `AskUserQuestion`:
 
 Options:
 
-1. **I want the bolt-on — show me the install instructions** — proceed to Step 4
-2. **Skip and use Claude-only synthesis** — proceed to Step 5
-3. **I already configured it** — proceed to Step 5 (no install work needed)
+1. **Install it now** — proceed to Step 4 (Claude attempts the install in this session via `uv`; falls back to host-machine instructions if the sandbox blocks it)
+2. **Skip — use Claude-only synthesis** — proceed to Step 5
+3. **I already have it configured** — proceed to Step 5 (no install work needed)
 
 ## Step 4: NotebookLM install — try `uv` first
 
