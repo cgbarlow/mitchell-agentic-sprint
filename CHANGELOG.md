@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- README Cowork Quick Start step 4 stated "Cowork users will be pointed at out-of-band install instructions for their own machine" for the NotebookLM bolt-on — stale wording from before v0.3.2 made explicit that the bolt-on is Claude Code CLI only. Reworded to clarify Cowork runs in Claude-only synthesis mode (fully featured) and the bolt-on is the CLI-only optional path.
+
 ## [v0.3.2] - 2026-05-10
 
 ### Fixed
