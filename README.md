@@ -74,22 +74,23 @@ Pinned compatibility: `campaign-mode@0.4.8`, `six-animals@0.1.2` (verified 2026-
 
 ### Optional (power-user setup): NotebookLM MCP bolt-on
 
-**Most users should skip this.** The Sprint completes fine with Claude doing the synthesis directly. The bolt-on adds source-grounded synthesis quality and an audio briefing artefact in Step 6, but it requires Mac-side setup — Cowork's sandbox cannot install or configure it for you.
+**Most users should skip this.** The Sprint completes fine with Claude doing the synthesis directly. The bolt-on adds source-grounded synthesis quality and an audio briefing artefact in Step 6, but it requires local-machine setup on macOS, Windows, or Linux — Cowork's sandbox cannot install or configure it for you.
 
 **What you're signing up for:**
-- Run 4 commands in a terminal on your Mac (Cowork's sandbox is a remote VM with no access to your local Claude Desktop config — even if `notebooklm-mcp-cli` installs in the sandbox, it can't wire itself up)
-- One-time browser-based Google login on your Mac
+- Run 4 commands in a terminal on your local machine (Cowork's sandbox is a remote VM with no access to your local Claude Desktop config — even if `notebooklm-mcp-cli` installs in the sandbox, it can't wire itself up)
+- One-time browser-based Google login on your local machine
 - Restart Claude Cowork / Code after setup
 - Cookies persist; subsequent sessions reuse the saved login
 
 ```bash
-# Run these in a terminal on your Mac (or on the host running Claude Code if you're CLI-only):
+# Run these in a terminal on your local machine — works on macOS, Windows
+# (PowerShell or cmd), or Linux. Same commands either way:
 uv tool install "notebooklm-mcp-cli>=0.6.6"   # uv handles Python ≥3.11 automatically
 # or: pip install "notebooklm-mcp-cli>=0.6.6" (needs Python ≥3.11 already)
 # or: pipx install notebooklm-mcp-cli
 
 nlm login                      # browser-based; one-time
-nlm setup add claude-code      # wires up MCP for Cowork / Code
+nlm setup add claude-code      # wires up MCP for Cowork / Code on your OS
 nlm doctor                     # verify
 ```
 

@@ -88,8 +88,8 @@ Use `AskUserQuestion`:
 > The Sprint can use Google NotebookLM for Steps 3–6 synthesis (theme map, expert framework, positioning whitespace, plus an audio overview in Step 6). It improves quality and adds the audio-briefing artefact.
 >
 > **What you're signing up for** if you choose to set it up:
-> - Run **4 commands in a terminal on your Mac** (Cowork's sandbox cannot do any of this for you — it's a remote VM with no access to your local Claude Desktop config or browser)
-> - One of those is a **browser-based Google login** that opens locally on your Mac
+> - Run **4 commands in a terminal on your local machine** (Cowork's sandbox cannot do any of this for you — it's a remote VM with no access to your local Claude Desktop config or browser)
+> - One of those is a **browser-based Google login** that opens locally on your local machine
 > - You'll then **restart Claude Cowork or Claude Code** so the MCP integration is picked up
 > - The setup is a one-time per-machine cost; cookies persist
 >
@@ -98,16 +98,16 @@ Use `AskUserQuestion`:
 Options:
 
 1. **Skip — use Claude-only synthesis (Recommended for most users)** — proceed to Step 5; you can re-run `/sprint-setup` later if you change your mind
-2. **I'm comfortable with the Mac-side setup — show me the commands** — proceed to Step 4
+2. **I'm comfortable with the local-machine setup — show me the commands** — proceed to Step 4
 3. **I already have it configured** — proceed to Step 5 (no install work needed)
 
-## Step 4: NotebookLM install — Mac-side commands
+## Step 4: NotebookLM install — local-machine commands
 
-**Do not attempt the install in Cowork's sandbox.** Even if it succeeds (the package may install fine in the sandbox), the wire-up step that actually matters — `nlm setup add claude-code` — modifies a config file on **your Mac** that the sandbox can't reach. So the install has to run on your Mac regardless.
+**Do not attempt the install in Cowork's sandbox.** Even if it succeeds (the package may install fine in the sandbox), the wire-up step that actually matters — `nlm setup add claude-code` — modifies a Claude Desktop config file on **your local machine** that the sandbox can't reach. So the install has to run on your local machine regardless. The commands work identically on macOS, Windows, and Linux.
 
 Tell the user:
 
-> Run these in a regular terminal on your Mac (or on the host running Claude Code if you're a CLI user — same commands either way):
+> Run these in a regular terminal on your local machine (or on the host running Claude Code if you're a CLI user — same commands either way):
 >
 > ```bash
 > # 1. Install nlm — pick whichever you have. uv is recommended because
@@ -119,9 +119,11 @@ Tell the user:
 > # 2. One-time browser-based Google login (opens your default browser)
 > nlm login
 >
-> # 3. Wire up Claude Desktop's MCP integration (modifies
-> #    ~/Library/Application Support/Claude/claude_desktop_config.json
-> #    on macOS)
+> # 3. Wire up Claude Desktop's MCP integration. nlm finds the right
+> #    config path for your OS automatically:
+> #      macOS:   ~/Library/Application Support/Claude/claude_desktop_config.json
+> #      Windows: %APPDATA%\Claude\claude_desktop_config.json
+> #      Linux:   ~/.config/Claude/claude_desktop_config.json
 > nlm setup add claude-code
 >
 > # 4. Verify
