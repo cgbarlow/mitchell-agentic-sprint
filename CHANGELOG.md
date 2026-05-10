@@ -9,12 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [v0.3.1] - 2026-05-10
 
-### Fixed
-- `/sprint-setup` Step 3 NotebookLM choice options reworded for accuracy. Option 1 was "I want the bolt-on — show me the install instructions" (passive-sounding); now reads "Show me the commands" with subtext explaining the install must run on the user's Mac. Options 2 and 3 also tightened: "Skip — use Claude-only synthesis" and "I already have it configured".
-
 ### Changed
-- `/sprint-setup` no longer attempts in-sandbox NotebookLM install. Researching the friction reported in the wild surfaced that Cowork's sandbox is a remote VM with no access to the user's local Claude Desktop config — so even if `notebooklm-mcp-cli` installs successfully in the sandbox, the wire-up step (`nlm setup add claude-code`) modifies a Mac-side config file the sandbox cannot reach. The in-sandbox install was wasted effort. Step 4 now gives one clean set of Mac-side commands (`uv tool install` + `nlm login` + `nlm setup add claude-code` + `nlm doctor`) for both Cowork and CLI users to run on their Mac. CLI users on the same host as Claude Code can still opt to run steps 1, 3, 4 in-session via Bash.
-- README NotebookLM section rewritten to mirror the same "install on your Mac, not in Cowork's sandbox" framing, with a reference to Anthropic's Cowork + local MCP support article.
+- **NotebookLM bolt-on reframed as power-user opt-in, not the default.** The platform constraints (Cowork's sandbox can't touch the user's local Claude Desktop config or browser) mean every NotebookLM setup requires Mac-side commands and a browser-based Google login — there is no zero-friction path with the current platform. Rather than burying users in setup steps for a feature most won't need, `/sprint-setup` now leads with **"Skip — use Claude-only synthesis (Recommended for most users)"** as option 1 and surfaces the Mac-side commitment explicitly before the user opts in. The trade-off (lose NotebookLM-specific audio overview, keep all three written artefacts) is stated upfront.
+- `/sprint-setup` no longer attempts in-sandbox NotebookLM install. Cowork's sandbox is a remote VM with no access to the user's local Claude Desktop config — so even if `notebooklm-mcp-cli` installs successfully in the sandbox, the wire-up step (`nlm setup add claude-code`) modifies a Mac-side config file the sandbox cannot reach. The in-sandbox install was wasted effort. Step 4 now gives one clean set of Mac-side commands.
+- README NotebookLM section retitled "Optional (power-user setup): NotebookLM MCP bolt-on" with the same up-front "most users should skip this" framing.
 
 [v0.3.1]: https://github.com/cgbarlow/mitchell-agentic-sprint/releases/tag/v0.3.1
 

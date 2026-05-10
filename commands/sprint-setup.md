@@ -79,25 +79,26 @@ Confirm to the user:
 
 Continue to Step 3.
 
-## Step 3: Choose NotebookLM MCP path
+## Step 3: Choose NotebookLM MCP path (optional, power-user setup)
 
 Use `AskUserQuestion`:
 
-> **NotebookLM MCP bolt-on (optional, recommended).**
+> **NotebookLM MCP bolt-on (optional — power-user setup, not the default).**
 >
-> The Sprint can use Google NotebookLM as a synthesis layer for Steps 3–6 (theme map, expert framework, positioning whitespace, audio overview). It improves quality on those steps and aligns with the concept's "verbatim quotes only" rule.
+> The Sprint can use Google NotebookLM for Steps 3–6 synthesis (theme map, expert framework, positioning whitespace, plus an audio overview in Step 6). It improves quality and adds the audio-briefing artefact.
 >
-> **Where to install it (important):** Cowork's sandbox is a remote VM with no access to your local Claude Desktop config or browser. Even if `notebooklm-mcp-cli` installs in the sandbox, it can't help — `nlm setup add claude-code` modifies a config file on **your Mac**, and `nlm login` needs a browser. So the install must run on the host where Claude Desktop / Claude Code lives.
+> **What you're signing up for** if you choose to set it up:
+> - Run **4 commands in a terminal on your Mac** (Cowork's sandbox cannot do any of this for you — it's a remote VM with no access to your local Claude Desktop config or browser)
+> - One of those is a **browser-based Google login** that opens locally on your Mac
+> - You'll then **restart Claude Cowork or Claude Code** so the MCP integration is picked up
+> - The setup is a one-time per-machine cost; cookies persist
 >
-> - **Cowork users:** run the commands in a regular terminal on your Mac (not Cowork's sandbox). Cowork's bridge picks up the MCP server from `~/Library/Application Support/Claude/claude_desktop_config.json` after a restart.
-> - **Claude Code CLI users:** run the commands in your current shell — they take effect immediately on `/reload-plugins`.
->
-> Without the bolt-on, the Sprint uses Claude-only synthesis for Steps 3–5; Step 6's audio overview is unavailable. Everything else works.
+> **Most users skip this.** The Sprint completes fine with Claude doing the synthesis directly — you lose the NotebookLM-specific audio overview, but the three written artefacts (sales deck, outreach plan, investor deck) are produced equally well either way.
 
 Options:
 
-1. **Show me the commands** — proceed to Step 4 (you'll run them on your Mac in a regular terminal; Cowork's sandbox can't help here)
-2. **Skip — use Claude-only synthesis** — proceed to Step 5
+1. **Skip — use Claude-only synthesis (Recommended for most users)** — proceed to Step 5; you can re-run `/sprint-setup` later if you change your mind
+2. **I'm comfortable with the Mac-side setup — show me the commands** — proceed to Step 4
 3. **I already have it configured** — proceed to Step 5 (no install work needed)
 
 ## Step 4: NotebookLM install — Mac-side commands
