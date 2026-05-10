@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v0.3.2] - 2026-05-10
+
+### Fixed
+- **Honest framing: NotebookLM bolt-on works in Claude Code CLI only — it does NOT work in Cowork.** Confirmed empirically by a user attempting setup from Cowork: `nlm setup add claude-code` writes to Claude Code's user-scope config (`~/.claude/...`), not Claude Desktop's `claude_desktop_config.json`. And per [Anthropic's Cowork + local MCP support article](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop), Cowork bridges only *remote* MCP servers (custom connectors) — local stdio MCPs from `claude_desktop_config.json` aren't surfaced in Cowork either. So even manual config-editing doesn't help Cowork users. The v0.3.1 docs implied otherwise — they said "restart Claude Cowork" would pick the bolt-on up. Corrected: Step 3 of `/sprint-setup` now states the constraint plainly and recommends Cowork users skip the bolt-on entirely. Claude Code CLI users still get the same install path.
+- README NotebookLM section retitled "Optional (Claude Code CLI only)" with the platform constraint surfaced upfront.
+
+[v0.3.2]: https://github.com/cgbarlow/mitchell-agentic-sprint/releases/tag/v0.3.2
+
 ## [v0.3.1] - 2026-05-10
 
 ### Changed

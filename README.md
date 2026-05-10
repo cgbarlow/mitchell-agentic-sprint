@@ -72,31 +72,25 @@ For terminal-first users:
 
 Pinned compatibility: `campaign-mode@0.4.8`, `six-animals@0.1.2` (verified 2026-05-08). Or clone the repos into your `.claude/plugins/` directory if you'd rather skip the marketplace entirely.
 
-### Optional (power-user setup): NotebookLM MCP bolt-on
+### Optional (Claude Code CLI only): NotebookLM MCP bolt-on
 
-**Most users should skip this.** The Sprint completes fine with Claude doing the synthesis directly. The bolt-on adds source-grounded synthesis quality and an audio briefing artefact in Step 6, but it requires local-machine setup on macOS, Windows, or Linux — Cowork's sandbox cannot install or configure it for you.
+**The NotebookLM bolt-on works in Claude Code CLI only — it does NOT work in Claude Cowork.** This is a platform constraint, not a Sprint limitation: `nlm setup add claude-code` writes to Claude Code (CLI)'s user-scope config (`~/.claude/...`), not Claude Desktop's `claude_desktop_config.json`. And per [Anthropic's Cowork + local MCP support article](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop), Cowork only bridges remote MCP servers (custom connectors); it doesn't pick up local stdio MCP servers from `claude_desktop_config.json` either. So even manual config-editing doesn't help Cowork users.
 
-**What you're signing up for:**
-- Run 4 commands in a terminal on your local machine (Cowork's sandbox is a remote VM with no access to your local Claude Desktop config — even if `notebooklm-mcp-cli` installs in the sandbox, it can't wire itself up)
-- One-time browser-based Google login on your local machine
-- Restart Claude Cowork / Code after setup
-- Cookies persist; subsequent sessions reuse the saved login
+**Cowork users:** skip this entirely. Claude-only synthesis works for the entire Sprint. You miss the NotebookLM audio overview in Step 6, but the three written artefacts (sales deck, outreach plan, investor deck) are produced equally well.
+
+**Claude Code CLI users:** opt in if you want it. Setup runs on your local machine:
 
 ```bash
-# Run these in a terminal on your local machine — works on macOS, Windows
-# (PowerShell or cmd), or Linux. Same commands either way:
 uv tool install "notebooklm-mcp-cli>=0.6.6"   # uv handles Python ≥3.11 automatically
 # or: pip install "notebooklm-mcp-cli>=0.6.6" (needs Python ≥3.11 already)
 # or: pipx install notebooklm-mcp-cli
 
 nlm login                      # browser-based; one-time
-nlm setup add claude-code      # wires up MCP for Cowork / Code on your OS
+nlm setup add claude-code      # wires up MCP for Claude Code (CLI only)
 nlm doctor                     # verify
 ```
 
-After install, **restart Claude Cowork or Claude Code**. Cowork's bridge picks up the MCP server from your local Claude Desktop config on next launch ([Anthropic support: Cowork + local MCP](https://support.claude.com/en/articles/10949351-getting-started-with-local-mcp-servers-on-claude-desktop)). The Sprint reads `.sprint/setup.md` to decide whether to route synthesis through NotebookLM or fall back to Claude-only — re-run `/sprint-setup` after install to flip `notebooklm-mcp: unavailable` to `available`.
-
-**What you lose by skipping:** the NotebookLM-specific audio overview in Step 6 (a ~10-min spoken briefing). The three written artefacts (sales deck, outreach plan, investor deck) are produced equally well by Claude-only synthesis.
+After install, **restart Claude Code**. Subsequent sessions pick up the saved login. The Sprint reads `.sprint/setup.md` to decide whether to route synthesis through NotebookLM or fall back to Claude-only.
 
 See [ADR-006](docs/adrs/ADR-006-NotebookLM-MCP-Integration.md) and [SPEC-006-A](docs/adrs/specs/SPEC-006-A-NotebookLM-MCP.md) for the full integration contract.
 
