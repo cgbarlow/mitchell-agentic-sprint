@@ -41,7 +41,7 @@ The Sprint is well-suited to Cowork. A six-step validation pipeline runs across 
    ```
    /sprint-start
    ```
-   On the first run in a project, `/sprint-start` auto-invokes setup: prerequisites are verified, the **🧢 Mitchell** profile is offered (default install), and the NotebookLM bolt-on is offered (Cowork users will be pointed at out-of-band install instructions for their own machine — see [below](#optional-notebooklm-mcp-bolt-on)). Then Step 1 (Discovery) opens with Mitchell framing your unfair advantages, runway, and rough idea.
+   On the first run in a project, `/sprint-start` auto-invokes setup: prerequisites are verified and the **🧢 Mitchell** profile is offered (default install). The Sprint runs in Claude-only synthesis mode — fully featured for Cowork users. (The optional NotebookLM bolt-on for source-grounded synthesis is **Claude Code CLI only**; see [below](#optional-claude-code-cli-only-notebooklm-mcp-bolt-on) for that path.) Then Step 1 (Discovery) opens with Mitchell framing your unfair advantages, runway, and rough idea.
 
    To re-configure later (install Mitchell after declining, onboard NotebookLM after the fact), call `/sprint-setup` directly.
 
