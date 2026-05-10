@@ -79,71 +79,62 @@ Confirm to the user:
 
 Continue to Step 3.
 
-## Step 3: Choose NotebookLM MCP path
+## Step 3: Choose NotebookLM MCP path (optional, power-user setup)
 
 Use `AskUserQuestion`:
 
-> **NotebookLM MCP bolt-on (optional, recommended).**
+> **NotebookLM MCP bolt-on (optional — power-user setup, not the default).**
 >
-> The Sprint can use Google NotebookLM as a synthesis layer for Steps 3–6 (theme map, expert framework, positioning whitespace, audio overview). It improves quality on those steps and aligns with the concept's "verbatim quotes only" rule.
+> The Sprint can use Google NotebookLM for Steps 3–6 synthesis (theme map, expert framework, positioning whitespace, plus an audio overview in Step 6). It improves quality and adds the audio-briefing artefact.
 >
-> **Where to install it:** `notebooklm-mcp-cli` requires Python ≥3.11. Cowork's sandbox runs Python 3.10, **but** [`uv`](https://docs.astral.sh/uv/) can provision Python 3.11 on demand inside the sandbox by downloading prebuilt binaries — so an in-Cowork install via `uv tool install notebooklm-mcp-cli` usually works. The setup command tries that first. If the sandbox blocks it (network restrictions, filesystem permissions), fall back to installing on your own machine in a regular terminal. CLI users on a Python ≥3.11 host can install via plain pip in-session. After install, **restart Claude Cowork or Claude Code** to pick up the new MCP server.
+> **What you're signing up for** if you choose to set it up:
+> - Run **4 commands in a terminal on your local machine** (Cowork's sandbox cannot do any of this for you — it's a remote VM with no access to your local Claude Desktop config or browser)
+> - One of those is a **browser-based Google login** that opens locally on your local machine
+> - You'll then **restart Claude Cowork or Claude Code** so the MCP integration is picked up
+> - The setup is a one-time per-machine cost; cookies persist
 >
-> Without the bolt-on, the Sprint uses Claude-only synthesis for Steps 3–5; Step 6's audio overview is unavailable. Everything else works.
+> **Most users skip this.** The Sprint completes fine with Claude doing the synthesis directly — you lose the NotebookLM-specific audio overview, but the three written artefacts (sales deck, outreach plan, investor deck) are produced equally well either way.
 
 Options:
 
-1. **I want the bolt-on — show me the install instructions** — proceed to Step 4
-2. **Skip and use Claude-only synthesis** — proceed to Step 5
-3. **I already configured it** — proceed to Step 5 (no install work needed)
+1. **Skip — use Claude-only synthesis (Recommended for most users)** — proceed to Step 5; you can re-run `/sprint-setup` later if you change your mind
+2. **I'm comfortable with the local-machine setup — show me the commands** — proceed to Step 4
+3. **I already have it configured** — proceed to Step 5 (no install work needed)
 
-## Step 4: NotebookLM install — try `uv` first
+## Step 4: NotebookLM install — local-machine commands
 
-The recommended install path uses [`uv`](https://docs.astral.sh/uv/) because uv provisions Python 3.11 itself by downloading prebuilt binaries — sidestepping Cowork's Python 3.10 sandbox limitation. It also works fine on plain Python ≥3.11 hosts (CLI sessions).
+**Do not attempt the install in Cowork's sandbox.** Even if it succeeds (the package may install fine in the sandbox), the wire-up step that actually matters — `nlm setup add claude-code` — modifies a Claude Desktop config file on **your local machine** that the sandbox can't reach. So the install has to run on your local machine regardless. The commands work identically on macOS, Windows, and Linux.
 
-### Step 4.1: Attempt the install
+Tell the user:
 
-If Bash is available, ask the user via `AskUserQuestion` whether to run the install in-session (the user must run `nlm login` themselves regardless — it opens a browser). If they confirm, run:
-
-```bash
-# Install uv if it's not already there (idempotent)
-command -v uv >/dev/null 2>&1 || pip install --quiet uv
-
-# Install the unified CLI + MCP server. uv provisions Python 3.11
-# automatically if the host Python is older.
-uv tool install "notebooklm-mcp-cli>=0.6.6"
-```
-
-If `uv tool install` succeeds, continue to Step 4.2.
-
-**If `uv tool install` fails** (network blocks, sandbox restrictions, or any other error), surface the error to the user and fall back to host-machine install. Tell them:
-
-> The in-session install didn't work — likely Cowork's sandbox blocks something `uv` needs (downloading the Python 3.11 binary, or running it). Run these on **your own machine** in a regular terminal instead:
+> Run these in a regular terminal on your local machine (or on the host running Claude Code if you're a CLI user — same commands either way):
 >
 > ```bash
-> # one of (in order of preference):
+> # 1. Install nlm — pick whichever you have. uv is recommended because
+> #    it provisions Python 3.11 automatically (nlm requires Python ≥3.11):
 > uv tool install "notebooklm-mcp-cli>=0.6.6"
-> # or, on a Python ≥3.11 host:
-> pip install "notebooklm-mcp-cli>=0.6.6"
-> # or:
-> pipx install notebooklm-mcp-cli
+> # or: pip install "notebooklm-mcp-cli>=0.6.6"   (needs Python ≥3.11 already)
+> # or: pipx install notebooklm-mcp-cli
+>
+> # 2. One-time browser-based Google login (opens your default browser)
+> nlm login
+>
+> # 3. Wire up Claude Desktop's MCP integration. nlm finds the right
+> #    config path for your OS automatically:
+> #      macOS:   ~/Library/Application Support/Claude/claude_desktop_config.json
+> #      Windows: %APPDATA%\Claude\claude_desktop_config.json
+> #      Linux:   ~/.config/Claude/claude_desktop_config.json
+> nlm setup add claude-code
+>
+> # 4. Verify
+> nlm doctor
 > ```
+>
+> Cookies persist locally; you only run `nlm login` once. After `nlm setup add claude-code` completes, **restart Claude Cowork** (or Claude Code, whichever you're using). Cowork's bridge picks up the MCP server from your local Claude Desktop config on next launch.
 
-If Bash is **not** available (Cowork without sandbox, or restricted CLI), skip the in-session attempt and go straight to the host-machine instructions above.
+If the user is in **Claude Code CLI** running on the host that has Python ≥3.11 + a browser (uncommon edge case — most people run CLI on a host that *is* their Mac), and they explicitly opt in via `AskUserQuestion`, you can run steps 1, 3, and 4 in-session via Bash. Step 2 (`nlm login`) the user always runs themselves because it's a browser handshake. **Do not attempt this in Cowork's sandbox** — even if Bash is available there, the install will not benefit Cowork's MCP integration.
 
-### Step 4.2: Login + MCP wire-up
-
-The user runs these themselves — `nlm login` opens a browser and the user has to authenticate to Google:
-
-```bash
-nlm login                      # browser-based; one-time
-nlm setup add claude-code      # wires up Claude's MCP integration
-nlm doctor                     # verify
-```
-
-After `nlm setup add claude-code` completes, **restart Claude Cowork or Claude Code** to pick up the new MCP server. Cookies persist locally; subsequent sessions use the saved login.
-
-### Step 4.3: Confirm
+### Step 4 confirm
 
 After the user reports completion:
 
@@ -152,7 +143,7 @@ Use `AskUserQuestion`:
 > Confirm install status:
 
 Options:
-1. **Done — all steps completed and `nlm doctor` is clean** — record `notebooklm-mcp: available`
+1. **Done — all four steps completed on my Mac, and `nlm doctor` is clean** — record `notebooklm-mcp: available`
 2. **I'll come back to this later** — record `notebooklm-mcp: unavailable`; the Sprint will use Claude-only synthesis until the user re-runs `/sprint-setup` after install
 3. **Skip — I don't want the bolt-on** — record `notebooklm-mcp: declined`
 
